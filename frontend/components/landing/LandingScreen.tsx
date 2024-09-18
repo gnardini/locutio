@@ -37,8 +37,8 @@ export function LandingScreen({ user }: Props) {
     <div className="flex flex-col items-center min-h-screen p-6 text-center relative bg-gradient-to-r from-secondary-background via-primary-background to-secondary-background">
       <nav className="w-full max-w-[1000px] flex justify-end items-center mb-10 gap-8">
         <div className="flex gap-1 mr-auto items-center">
-          <img src={'/logo.png'} className="w-16 h-16" />
-          <h2 className="text-4xl">Template</h2>
+          <img src={'/logo.webp'} className="w-16 h-16" />
+          <h2 className="text-4xl">Locutio</h2>
         </div>
         <a
           href="https://github.com/gnardini"
@@ -60,7 +60,7 @@ export function LandingScreen({ user }: Props) {
       </nav>
       <AuthModal isOpen={isAuthModalOpen} onClose={handleCloseAuthModal} />
       <h1 className="text-6xl font-bold mt-20 bg-clip-text text-transparent bg-gradient-to-r from-secondary-accent to-purple-500">
-        Template Title
+        Make your app multilingual in a heartbeat
       </h1>
       <div className="w-[1000px] flex flex-col">
         <h2 className="w-[600px] mx-auto text-2xl mt-8">Subheading</h2>

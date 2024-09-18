@@ -11,7 +11,7 @@ export const EmailService = {
         return;
       }
       await resend.emails.send({
-        from: 'Gonza from Phinxer <gonza@kamaraapp.com>',
+        from: 'Gonza from Locutio <gonza@locut.io>',
         to,
         subject,
         html: body,

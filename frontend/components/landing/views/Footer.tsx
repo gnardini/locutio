@@ -5,8 +5,8 @@ export function Footer() {
   return (
     <footer className="w-full max-w-[1000px] flex flex-col sm:flex-row justify-between items-center mt-20 py-6 border-t border-text-tertiary">
       <div className="flex items-center mb-4 sm:mb-0">
-        <img src={'/logo.png'} className="w-8 h-8 mr-2" alt="Logo" />
-        <span className="text-xl font-semibold">Template</span>
+        <img src={'/logo.webp'} className="w-8 h-8 mr-2" alt="Logo" />
+        <span className="text-xl font-semibold">Locutio</span>
       </div>
       <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
         <p className="text-text-primary ">

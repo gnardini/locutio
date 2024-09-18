@@ -8,6 +8,6 @@ export default {
   Layout,
   Head,
 
-  title: 'Template',
+  title: 'Locutio',
   extends: vikeReact,
 } satisfies Config;
