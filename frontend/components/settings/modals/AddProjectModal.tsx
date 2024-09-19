@@ -2,7 +2,8 @@ import { Modal } from '@frontend/components/common/Modal';
 import { useCreateOrgQuery } from '@frontend/queries/organizations/useCreateOrgQuery';
 import { GitHubRepo } from '@type/github';
 import React, { useEffect, useState } from 'react';
-import { Button } from '../../common/Button';
+import { Button, ButtonType } from '../../common/Button';
+import { Input } from '@frontend/components/common/Input';
 
 interface Props {
   visible: boolean;
@@ -49,28 +50,28 @@ export const AddProjectModal: React.FC<Props> = ({ visible, closeModal, repos })
     >
       <div className="p-4">
         <h2 className="text-xl font-semibold mb-4 text-text-primary">Add New Project</h2>
-        <input
+        <Input
           type="text"
           placeholder="Search repos..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-2 py-1 mb-4 rounded-lg outline-gray-4"
+          className="w-full px-2 py-1 mb-4 rounded-lg outline-gray-400"
         />
         <textarea
           placeholder="Project description..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full px-2 py-1 mb-4 rounded-lg outline-gray-4 resize-none"
+          className="w-full bg-tertiary-background px-2 py-1 mb-4 rounded-lg outline-gray-400 resize-none"
           rows={3}
         />
-        <div className="max-h-[400px] bg-gray-0 px-1 rounded-lg overflow-y-auto mb-4">
+        <div className="max-h-[400px] bg-gray-0 border border-gray-200 px-1 rounded-lg overflow-y-auto mb-4">
           {filteredRepos.map((repo) => {
             const isSelected = selectedRepo?.name === repo.name;
             return (
               <div
                 key={repo.name}
                 className={`flex flex-row items-center my-1 py-1 px-1 cursor-pointer w-full rounded-lg ${
-                  isSelected ? 'bg-gray-2' : 'hover:bg-gray-2'
+                  isSelected ? 'bg-tertiary-background' : 'hover:bg-tertiary-background'
                 }`}
                 onClick={() => handleSelectRepo(repo)}
               >
@@ -81,7 +82,9 @@ export const AddProjectModal: React.FC<Props> = ({ visible, closeModal, repos })
           })}
         </div>
         <div className="flex justify-end space-x-2">
-          <Button onClick={closeModal}>Cancel</Button>
+          <Button type={ButtonType.Secondary} onClick={closeModal}>
+            Cancel
+          </Button>
           <Button onClick={handleCreateProject} loading={loading} disabled={!selectedRepo}>
             Create
           </Button>

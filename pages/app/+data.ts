@@ -1,10 +1,8 @@
 // https://vike.dev/data
 import { authenticateUser } from '@backend/core/auth';
-import { GitHubService } from '@backend/services/GitHubService';
-import OrganizationsService from '@backend/services/OrganizationsService';
 import { UsersService } from '@backend/services/UsersService';
 import { Organization } from '@type/organization';
-import { User } from '@type/user';
+import { MembershipType, User } from '@type/user';
 import { redirect } from 'vike/abort';
 import type { PageContextServer } from 'vike/types';
 
@@ -12,7 +10,7 @@ export type AppData = {
   user: User;
   organizations: Organization[];
   activeOrg: Organization;
-  membershipType: 'owner' | 'admin' | 'member';
+  membershipType: MembershipType;
 };
 
 export default async function data(context: PageContextServer): Promise<AppData> {

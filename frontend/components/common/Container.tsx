@@ -20,7 +20,7 @@ export function Container({
   const { organizations, activeOrg, setActiveOrg } = useAuth();
 
   const navItems = [
-    { tab: Tab.App, label: 'Dashboard', href: '/dashboard' },
+    { tab: Tab.App, label: 'Dashboard', href: '/app' },
     { tab: Tab.Settings, label: 'Settings', href: '/settings' },
   ];
 

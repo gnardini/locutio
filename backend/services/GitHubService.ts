@@ -1,11 +1,15 @@
 import { ApiError } from '@backend/core/apiHandler';
-import { makeGet } from '@backend/makeQuery';
+import { makeGet, makePost } from '@backend/makeQuery';
 import { makeQuery } from '@frontend/queries/useQuery';
 import { GitHubFile, GitHubRepo } from '@type/github';
 import { Organization } from '@type/organization';
 import { User } from '@type/user';
+import jwt from 'jsonwebtoken';
 import { BranchService } from './BranchService';
 import { UsersService } from '@backend/services/UsersService';
+import { GITHUB_CLIENT_ID } from '@backend/config';
+import fs from 'fs';
+import path from 'path';
 
 const BRANCH_NAME = 'locutio';
 
@@ -62,6 +66,7 @@ export const GitHubService = {
           logo: repo.owner.avatar_url,
         }),
       );
+      console.log(repos);
 
       const linkHeader = response.headers.get('Link');
       const nextUrl = linkHeader
@@ -75,7 +80,7 @@ export const GitHubService = {
     };
 
     let allRepos: GitHubRepo[] = [];
-    let nextUrl: string | null = 'https://api.github.com/user/repos?per_page=100';
+    let nextUrl: string | null = 'https://api.github.com/user/repos?visibility=all&per_page=100';
 
     while (nextUrl) {
       const { repos, nextUrl: newNextUrl } = await fetchPage(nextUrl);
@@ -173,5 +178,46 @@ export const GitHubService = {
   //     console.error('Error updating file:', response);
   //     throw new ApiError(response.status, 'Error pushing updated translations to GitHub');
   //   }
+  // },
+
+  // async getInstallationToken(userId: string) {
+  //   let privateKey;
+  //   try {
+  //     const privateKeyPath = path.join(__dirname, '..', '..', '.private-key.pem');
+  //     privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+  //   } catch (error) {
+  //     console.error('Error reading private key:', error);
+  //     throw new ApiError(500, 'Error reading GitHub private key');
+  //   }
+
+  //   const payload = {
+  //     iat: Math.floor(Date.now() / 1000),
+  //     exp: Math.floor(Date.now() / 1000) + 600,
+  //     iss: 975992, // github app id
+  //   };
+
+  //   const token = jwt.sign(payload, privateKey, { algorithm: 'RS256' });
+
+  //   const githubAccessToken = await UsersService.getUserGitHubAccessToken(userId);
+
+  //   await makeGet('https://api.github.com/app/installations', githubAccessToken);
+
+  //   const response = await fetch(
+  //     `https://api.github.com/app/installations/INSTALLATION_ID/access_tokens`,
+  //     {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Accept: 'application/vnd.github+json',
+  //         Authorization: `Bearer ${token}`,
+  //         'User-Agent': 'Locutio',
+  //       },
+  //     },
+  //   );
+
+  //   const responseData = await response.json();
+
+  //   const installationAccessToken = responseData.token;
+  //   return token;
   // },
 };

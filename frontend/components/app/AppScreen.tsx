@@ -10,7 +10,7 @@ interface AppScreenProps {
 
 const AppScreen: React.FC<AppScreenProps> = ({ activeOrg, membershipType }) => {
   return (
-    <Container activeTab={Tab.App} className="flex-1 px-6 pb-6 overflow-auto">
+    <Container activeTab={Tab.App} className="flex-1 px-6 pb-6 overflow-auto" showSideBar>
       <div className="max-w-[1000px] mx-auto">
         <p>App</p>
       </div>

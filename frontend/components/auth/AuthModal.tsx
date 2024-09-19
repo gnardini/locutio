@@ -14,7 +14,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${
     import.meta.env.PUBLIC_ENV__GITHUB_CLIENT_ID
-  }&redirect_uri=${encodeURIComponent(`http://localhost:3950/github_callback`)}`;
+  }&redirect_uri=${encodeURIComponent(`https://locut.io/github_callback`)}`;
 
   return (
     <Modal visible={isOpen} closeModal={onClose} extraClassName="w-[500px]">
