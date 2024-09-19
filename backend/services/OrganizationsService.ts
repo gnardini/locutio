@@ -11,11 +11,22 @@ const transformOrganization = (org: any): Organization => ({
 });
 
 const OrganizationsService = {
-  createOrganization: async (name: string, userId: string): Promise<Organization> => {
+  createOrganization: async (
+    userId: string,
+    data: { name: string; description: string; baseLanguage: string; githubRepo: string },
+  ): Promise<Organization> => {
     const [organization] = await db('organizations')
       .insert({
         id: uuidv7(),
-        name,
+        name: data.name,
+        description: data.description,
+        github_repo: data.githubRepo,
+        languages: [],
+        base_language: data.baseLanguage,
+        input_file: null,
+        output_file: null,
+        main_branch: null,
+        last_commit: null,
       })
       .returning('*');
 

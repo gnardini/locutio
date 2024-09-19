@@ -8,7 +8,7 @@ export default createApiHandler({
   schema: createOrganizationSchema,
   requiresAuth: true,
   handler: async (data, { user }) => {
-    const organization = await OrganizationsService.createOrganization(data.name, user.id);
+    const organization = await OrganizationsService.createOrganization(user.id, data);
     await UsersService.updateActiveOrg(user, organization.id);
     return { organization };
   },

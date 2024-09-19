@@ -1,9 +1,11 @@
 import { db } from '@backend/db/db';
 import { toISOString } from '@backend/services/dbHelpers';
+import { DiscordService } from '@backend/services/DiscordService';
 import OrganizationMembersService from '@backend/services/OrganizationMembersService';
 import OrganizationsService from '@backend/services/OrganizationsService';
 import { Organization } from '@type/organization';
-import { User } from '@type/user';
+import { MembershipType, User } from '@type/user';
+import { uuidv7 } from 'uuidv7';
 
 export const transformUser = (user: any): User => ({
   id: user.id,
@@ -15,6 +17,43 @@ export const transformUser = (user: any): User => ({
 });
 
 export const UsersService = {
+  async createOrUpdateUser(
+    email: string,
+    gitHubLogin: string,
+    gitHubId: number,
+    accessToken: string,
+  ) {
+    const user = await db('users').where({ email }).first();
+    if (user) {
+      const [updatedUser] = await db('users')
+        .where({ email })
+        .update({ github_login: gitHubLogin, github_access_token: accessToken })
+        .returning('*');
+      return transformUser(updatedUser);
+    } else {
+      const userByGhLogin = await db('users').where({ github_login: gitHubLogin }).first();
+      if (userByGhLogin) {
+        const [updatedUser] = await db('users')
+          .where({ github_login: gitHubLogin })
+          .update({ github_access_token: accessToken, email })
+          .returning('*');
+        return transformUser(updatedUser);
+      } else {
+        const [newUser] = await db('users')
+          .insert({
+            id: uuidv7(),
+            email,
+            github_id: gitHubId,
+            github_login: gitHubLogin,
+            github_access_token: accessToken,
+          })
+          .returning('*');
+        await DiscordService.sendNewWaitlistMember(`New user: ${email}`);
+        return transformUser(newUser);
+      }
+    }
+  },
+
   async updateActiveOrg(user: User, orgId: string): Promise<User> {
     const [updatedUser] = await db('users')
       .where('id', user.id)
@@ -29,7 +68,7 @@ export const UsersService = {
   ): Promise<{
     organizations: Organization[];
     activeOrg: Organization;
-    membershipType: 'owner' | 'admin' | 'member';
+    membershipType: MembershipType;
   }> {
     const organizations = await OrganizationsService.getOrganizationsForUser(user.id);
 
@@ -42,10 +81,9 @@ export const UsersService = {
       await this.updateActiveOrg(user, activeOrg.id);
     }
 
-    const membershipType = await OrganizationMembersService.getMembershipType(
-      activeOrg.id,
-      user.id,
-    );
+    const membershipType = activeOrg
+      ? await OrganizationMembersService.getMembershipType(activeOrg.id, user.id)
+      : 'guest';
 
     return { organizations, activeOrg, membershipType };
   },

@@ -20,3 +20,9 @@ export const RESEND_API_KEY = process.env.RESEND_API_KEY ?? '';
 export const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY ?? '';
 export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET ?? '';
 export const STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY ?? '';
+
+export const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY ?? '';
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
+
+export const GITHUB_CLIENT_ID = process.env.PUBLIC_ENV__GITHUB_CLIENT_ID ?? '';
+export const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET ?? '';

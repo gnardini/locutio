@@ -6,11 +6,11 @@ export async function up(knex: Knex): Promise<void> {
     table.string('email').unique().notNullable();
     table.string('password');
     table.date('last_access');
+    table.string('github_access_token');
+    table.string('github_login');
+    table.string('github_id');
     table.boolean('is_public').defaultTo(false);
     table.timestamps(true, true);
-
-    table.uuid('active_org').nullable();
-    table.foreign('active_org').references('organizations.id');
   });
 }
 

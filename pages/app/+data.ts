@@ -1,5 +1,7 @@
 // https://vike.dev/data
 import { authenticateUser } from '@backend/core/auth';
+import { GitHubService } from '@backend/services/GitHubService';
+import OrganizationsService from '@backend/services/OrganizationsService';
 import { UsersService } from '@backend/services/UsersService';
 import { Organization } from '@type/organization';
 import { User } from '@type/user';
@@ -14,9 +16,10 @@ export type AppData = {
 };
 
 export default async function data(context: PageContextServer): Promise<AppData> {
-  const user = await authenticateUser(context.headers?.cookie ?? '', (key, value) => {
-    // console.log('Would like to set header ', key);
-  });
+  const user = await authenticateUser(context.headers?.cookie ?? '', (key, value) =>
+    // @ts-ignore
+    context.response.setHeader(key, value),
+  );
   if (!user) {
     throw redirect('/');
   }
@@ -28,6 +31,8 @@ export default async function data(context: PageContextServer): Promise<AppData>
   if (organizations.length === 0) {
     throw redirect('/settings');
   }
+
+  // const repos = await GitHubService.getRepositories(user)
 
   return { user, organizations, activeOrg, membershipType };
 }

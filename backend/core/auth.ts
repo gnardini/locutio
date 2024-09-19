@@ -25,7 +25,7 @@ export const authenticateUser = async (
   const user = token ? await AuthService.verifyAuthToken(token) : null;
 
   if (user) {
-    const newToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '30d' });
+    const newToken = createUserAuthToken(user.id);
     setHeader(
       'Set-Cookie',
       `token=${newToken}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60}; SameSite=Strict; Secure`,
@@ -33,4 +33,8 @@ export const authenticateUser = async (
   }
 
   return user;
+};
+
+export const createUserAuthToken = (userId: string) => {
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '30d' });
 };

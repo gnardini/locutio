@@ -2,9 +2,8 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 import { apiRouter } from '@backend/core/apiRouter';
-import { createHandler } from '@universal-middleware/express';
 import express from 'express';
-import { vikeHandler } from '@backend/vike-handler';
+import { renderPage } from 'vike/server';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -53,13 +52,25 @@ async function startServer() {
     app.use(viteDevMiddleware);
   }
 
-  /**
-   * Vike route
-   *
-   * @link {@see https://vike.dev}
-   **/
-  // @ts-ignore
-  app.all('*', createHandler(vikeHandler)());
+  app.get('*', async (req, res, next) => {
+    const pageContextInit = {
+      urlOriginal: req.url,
+      request: req,
+      headers: req.headers,
+      response: res,
+    };
+    const pageContext = await renderPage(pageContextInit);
+    const { httpResponse } = pageContext;
+    if (!httpResponse) {
+      return next();
+    } else {
+      const { body, statusCode, headers } = httpResponse;
+      headers.forEach(([name, value]) => res.header(name, value));
+      res.status(statusCode);
+
+      return res.send(body);
+    }
+  });
 
   app.listen(port, () => {
     console.info(`Server listening on http://localhost:${port}`);
