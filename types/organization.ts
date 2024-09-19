@@ -4,13 +4,13 @@ export interface Organization {
   id: string;
   name: string;
   githubRepo?: string;
-  languages?: string[];
-  description?: string;
-  inputFile?: string;
-  outputFile?: string;
-  baseLanguage?: string;
-  lastCommit?: string;
-  mainBranch?: string;
+  languages: string[];
+  description: string | null;
+  inputFile: string | null;
+  outputFile: string | null;
+  baseLanguage: string | null;
+  lastCommit: string | null;
+  mainBranch: string | null;
   created_at: string;
   updated_at: string;
 }

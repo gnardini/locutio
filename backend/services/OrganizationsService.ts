@@ -6,6 +6,13 @@ import { uuidv7 } from 'uuidv7';
 const transformOrganization = (org: any): Organization => ({
   id: org.id,
   name: org.name,
+  languages: org.languages,
+  description: org.description,
+  inputFile: org.input_file,
+  outputFile: org.output_file,
+  baseLanguage: org.base_language,
+  lastCommit: org.last_commit,
+  mainBranch: org.main_branch,
   created_at: toISOString(org.created_at),
   updated_at: toISOString(org.updated_at),
 });
@@ -38,6 +45,20 @@ const OrganizationsService = {
     });
 
     return transformOrganization(organization);
+  },
+
+  async updateOrganization(projectId: string, updateData: Partial<Omit<Organization, 'id'>>) {
+    const dbUpdateData: any = {};
+
+    if (updateData.description !== undefined) dbUpdateData.description = updateData.description;
+    if (updateData.baseLanguage !== undefined) dbUpdateData.base_language = updateData.baseLanguage;
+    if (updateData.inputFile !== undefined) dbUpdateData.input_file = updateData.inputFile;
+    if (updateData.outputFile !== undefined) dbUpdateData.output_file = updateData.outputFile;
+    if (updateData.languages !== undefined) dbUpdateData.languages = updateData.languages;
+    if (updateData.mainBranch !== undefined) dbUpdateData.main_branch = updateData.mainBranch;
+    if (updateData.lastCommit !== undefined) dbUpdateData.last_commit = updateData.lastCommit;
+
+    await db('projects').where('id', projectId).update(dbUpdateData);
   },
 
   getOrganizationsForUser: async (userId: string): Promise<Organization[]> => {

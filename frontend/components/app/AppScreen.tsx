@@ -13,6 +13,9 @@ const AppScreen: React.FC<AppScreenProps> = ({ activeOrg, membershipType }) => {
     <Container activeTab={Tab.App} className="flex-1 px-6 pb-6 overflow-auto" showSideBar>
       <div className="max-w-[1000px] mx-auto">
         <p>App</p>
+        <h1>{activeOrg.name}</h1>
+        <ProjectDescriptionView organization={activeOrg} />
+        <ProjectConfigView organization={activeOrg} />
       </div>
     </Container>
   );

@@ -10,7 +10,7 @@ interface NotificationItem {
 }
 
 interface NotificationContextType {
-  showNotification: (text: string, type: NotificationType) => void;
+  showNotification: (text: string, type?: NotificationType) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -27,7 +27,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const nextIdRef = useRef(1);
 
-  const showNotification = (text: string, type: NotificationType) => {
+  const showNotification = (text: string, type: NotificationType = 'success') => {
     const id = nextIdRef.current++;
     setNotifications((prevNotifications) => [...prevNotifications, { id, text, type }]);
 

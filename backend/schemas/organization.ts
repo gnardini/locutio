@@ -16,3 +16,18 @@ export const createOrganizationSchema = {
     }),
   }),
 };
+
+export const updateOrganizationSchema = {
+  input: z.object({
+    id: z.string().uuid(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    baseLanguage: z.string().optional(),
+    inputFile: z.string().optional(),
+    outputFile: z.string().optional(),
+    languages: z.array(z.string()).optional(),
+    mainBranch: z.string().optional(),
+    lastCommit: z.string().optional(),
+  }),
+  output: z.object({}),
+};

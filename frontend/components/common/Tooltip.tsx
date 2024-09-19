@@ -1,9 +1,9 @@
 import { HelpIcon } from '@frontend/svgs/HelpIcon';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 interface Props {
   isVisible?: boolean;
-  text: string;
+  text: ReactNode;
   className?: string;
 }
 
