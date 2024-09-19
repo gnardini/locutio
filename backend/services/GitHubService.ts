@@ -5,6 +5,7 @@ import { GitHubFile, GitHubRepo } from '@type/github';
 import { Organization } from '@type/organization';
 import { User } from '@type/user';
 import { BranchService } from './BranchService';
+import { UsersService } from '@backend/services/UsersService';
 
 const BRANCH_NAME = 'locutio';
 
@@ -45,45 +46,45 @@ export const GitHubService = {
   //   }));
   // },
 
-  // async getRepositories(user: User): Promise<GitHubRepo[]> {
-  //   const githubToken = user.githubAccessToken;
-  //   if (!githubToken) {
-  //     throw new Error("User doesn't have an active token");
-  //   }
+  async getRepositories(user: User): Promise<GitHubRepo[]> {
+    const githubToken = await UsersService.getUserGitHubAccessToken(user.id);
+    if (!githubToken) {
+      throw new Error("User doesn't have an active token");
+    }
 
-  //   const fetchPage = async (
-  //     url: string,
-  //   ): Promise<{ repos: GitHubRepo[]; nextUrl: string | null }> => {
-  //     const response = await makeGet(url, githubToken);
-  //     const repos = (response.data as any[]).map(
-  //       (repo: any): GitHubRepo => ({
-  //         name: repo.full_name,
-  //         logo: repo.owner.avatar_url,
-  //       }),
-  //     );
+    const fetchPage = async (
+      url: string,
+    ): Promise<{ repos: GitHubRepo[]; nextUrl: string | null }> => {
+      const response = await makeGet(url, githubToken);
+      const repos = (response.data as any[]).map(
+        (repo: any): GitHubRepo => ({
+          name: repo.full_name,
+          logo: repo.owner.avatar_url,
+        }),
+      );
 
-  //     const linkHeader = response.headers.get('Link');
-  //     const nextUrl = linkHeader
-  //       ? linkHeader
-  //           .split(',')
-  //           .find((part: any) => part.includes('rel="next"'))
-  //           ?.match(/<(.*)>/)?.[1] || null
-  //       : null;
+      const linkHeader = response.headers.get('Link');
+      const nextUrl = linkHeader
+        ? linkHeader
+            .split(',')
+            .find((part: any) => part.includes('rel="next"'))
+            ?.match(/<(.*)>/)?.[1] || null
+        : null;
 
-  //     return { repos, nextUrl };
-  //   };
+      return { repos, nextUrl };
+    };
 
-  //   let allRepos: GitHubRepo[] = [];
-  //   let nextUrl: string | null = 'https://api.github.com/user/repos?per_page=100';
+    let allRepos: GitHubRepo[] = [];
+    let nextUrl: string | null = 'https://api.github.com/user/repos?per_page=100';
 
-  //   while (nextUrl) {
-  //     const { repos, nextUrl: newNextUrl } = await fetchPage(nextUrl);
-  //     allRepos = [...allRepos, ...repos];
-  //     nextUrl = newNextUrl;
-  //   }
+    while (nextUrl) {
+      const { repos, nextUrl: newNextUrl } = await fetchPage(nextUrl);
+      allRepos = [...allRepos, ...repos];
+      nextUrl = newNextUrl;
+    }
 
-  //   return allRepos;
-  // },
+    return allRepos;
+  },
 
   // async readProjectSource(
   //   user: User,

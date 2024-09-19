@@ -54,6 +54,11 @@ export const UsersService = {
     }
   },
 
+  async getUserGitHubAccessToken(userId: string): Promise<string | null> {
+    const user = await db('users').where({ id: userId }).select('github_access_token').first();
+    return user ? user.github_access_token : null;
+  },
+
   async updateActiveOrg(user: User, orgId: string): Promise<User> {
     const [updatedUser] = await db('users')
       .where('id', user.id)
