@@ -8,10 +8,10 @@ import { Organization } from '@type/organization';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 interface Props {
-  project: Organization;
+  organization: Organization;
 }
 
-export const ProjectConfigView: React.FC<Props> = ({ project: initialProject }) => {
+export const ProjectConfigView: React.FC<Props> = ({ organization: initialProject }) => {
   const { showNotification } = useNotification();
   const { t } = useTranslation('dashboard');
   const [project, setProject] = useState(initialProject);

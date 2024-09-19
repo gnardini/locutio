@@ -8,10 +8,10 @@ import { Tooltip } from '../../common/Tooltip';
 import { useUpdateOrganizationQuery } from '@frontend/queries/organizations/useUpdateOrganizationQuery';
 
 interface Props {
-  project: Organization;
+  organization: Organization;
 }
 
-export const ProjectDescriptionView: React.FC<Props> = ({ project }) => {
+export const ProjectDescriptionView: React.FC<Props> = ({ organization: project }) => {
   const [description, setDescription] = useState(project.description ?? '');
   const [isEditing, setIsEditing] = useState(false);
   const { showNotification } = useNotification();
