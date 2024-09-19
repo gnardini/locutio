@@ -2,6 +2,7 @@ import { EditableField } from '@frontend/components/app/views/EditableField';
 import { LanguagesField } from '@frontend/components/app/views/LanguagesField';
 import { Dropdown } from '@frontend/components/common/Dropdown';
 import { useNotification } from '@frontend/context/NotificationContext';
+import { useUpdateOrganizationQuery } from '@frontend/queries/organizations/useUpdateOrganizationQuery';
 import { languages } from '@frontend/utils/languages';
 import { Organization } from '@type/organization';
 import React, { useState } from 'react';
@@ -14,7 +15,7 @@ export const ProjectConfigView: React.FC<Props> = ({ project: initialProject }) 
   const { showNotification } = useNotification();
   const { t } = useTranslation('dashboard');
   const [project, setProject] = useState(initialProject);
-  const { execute: runQuery } = useQuery('POST', '/api/updateProject');
+  const { execute: runQuery } = useUpdateOrganizationQuery();
 
   const updateField = async (field: string, value: string | null) => {
     await runQuery({

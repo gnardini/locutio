@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { FaPen } from 'react-icons/fa6';
 import { Button, ButtonType } from '../../common/Button';
 import { Tooltip } from '../../common/Tooltip';
+import { useUpdateOrganizationQuery } from '@frontend/queries/organizations/useUpdateOrganizationQuery';
 
 interface Props {
   project: Organization;
@@ -14,7 +15,7 @@ export const ProjectDescriptionView: React.FC<Props> = ({ project }) => {
   const [description, setDescription] = useState(project.description ?? '');
   const [isEditing, setIsEditing] = useState(false);
   const { showNotification } = useNotification();
-  const { execute: updateProject, loading } = useQuery('POST', '/api/updateProject');
+  const { execute: updateProject, loading } = useUpdateOrganizationQuery();
 
   const { t } = useTranslation('dashboard');
 
