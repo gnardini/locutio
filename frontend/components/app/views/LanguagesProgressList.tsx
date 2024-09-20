@@ -1,6 +1,6 @@
 import { useLanguageStringCountsQuery } from '@frontend/queries/strings/useLanguageStringCountsQuery';
 import { Organization } from '@type/organization';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FileStringCountsList } from './FileStringCountsList';
 
 interface LanguagesProgressListProps {
@@ -12,17 +12,31 @@ export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ or
   const [languageCounts, setLanguageCounts] = useState<{ language: string; count: number }[]>([]);
   const [expandedLanguage, setExpandedLanguage] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchLanguageCounts = useCallback(() => {
     executeLanguageCounts({ organizationId: organization.id }).then((result) => {
       if (result) {
         setLanguageCounts(result.languageCounts);
       }
     });
-  }, [organization.id]);
+  }, [organization.id, executeLanguageCounts]);
+
+  useEffect(() => {
+    fetchLanguageCounts();
+  }, [fetchLanguageCounts]);
 
   const handleLanguageClick = (language: string) => {
     setExpandedLanguage(expandedLanguage === language ? null : language);
   };
+
+  const handleFileCountUpdate = useCallback((language: string, translatedCount: number) => {
+    setLanguageCounts(prevCounts =>
+      prevCounts.map(lc =>
+        lc.language === language
+          ? { ...lc, count: translatedCount }
+          : lc
+      )
+    );
+  }, []);
 
   if (loadingLanguageCounts) return <div>Loading...</div>;
   if (errorLanguageCounts) return <div>Error: {errorLanguageCounts}</div>;
@@ -66,6 +80,7 @@ export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ or
                   organizationId={organization.id}
                   language={lc.language}
                   baseLanguage={baseLanguage}
+                  onLanguageCountUpdate={handleFileCountUpdate}
                 />
               </div>
             )}
