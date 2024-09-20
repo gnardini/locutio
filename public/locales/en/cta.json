@@ -1,0 +1,18 @@
+{
+  "loginOrRegister": "Log In or Sign Up",
+  "enterEmail": "Enter your email address",
+  "sendCode": "Get Started",
+  "sendingCode": "Sending verification code...",
+  "connectWithGitHub": "Connect with GitHub",
+  "dontUseGitHub": "Don't use GitHub? <span>We can still help</span>",
+  "translateYourApp": "Translate your App",
+  "continueWithGitHub": "Continue with GitHub",
+  "or": "or",
+  "pasteYourCode": "Check your inbox! Paste your code here:",
+  "verifyCode": "Verify",
+  "verifying": "Verifying...",
+  "openLocutio": "Open Locutio",
+  "repoNotFound": "Can't find the repository you are looking for?",
+  "installLocutio": "Install Locutio on GitHub",
+  "searchReposPlaceholder": "Search repos..."
+}

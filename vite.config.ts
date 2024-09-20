@@ -10,6 +10,7 @@ export default defineConfig({
       '@backend': path.resolve(__dirname, 'backend'),
       '@frontend': path.resolve(__dirname, 'frontend'),
       '@type': path.resolve(__dirname, 'types'),
+      '@locales': path.resolve(__dirname, 'locales'),
     },
   },
 });

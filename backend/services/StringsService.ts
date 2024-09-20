@@ -79,6 +79,7 @@ async function handleObject(
           file: fileName,
           key: fullKey,
           value,
+          updated_at: new Date(),
         })
         .onConflict(['project_id', 'language', 'file', 'key'])
         .merge();

@@ -1,15 +1,8 @@
-import { ApiError } from '@backend/core/apiHandler';
-import { makeGet, makePost } from '@backend/makeQuery';
-import { makeQuery } from '@frontend/queries/useQuery';
+import { makeGet } from '@backend/makeQuery';
+import { UsersService } from '@backend/services/UsersService';
 import { GitHubFile, GitHubRepo } from '@type/github';
 import { Organization } from '@type/organization';
 import { User } from '@type/user';
-import jwt from 'jsonwebtoken';
-import { BranchService } from './BranchService';
-import { UsersService } from '@backend/services/UsersService';
-import { GITHUB_CLIENT_ID } from '@backend/config';
-import fs from 'fs';
-import path from 'path';
 
 const BRANCH_NAME = 'locutio';
 
@@ -19,36 +12,39 @@ export const GitHubService = {
     return gitHubUser;
   },
 
-  // async getLatestCommit(user: User, org: Organization): Promise<string> {
-  //   if (!user.githubAccessToken) {
-  //     throw new Error("User doesn't have an active token");
-  //   }
-  //   const { data } = await makeGet(
-  //     `https://api.github.com/repos/${org.githubRepo}/commits?per_page=1`,
-  //     user.githubAccessToken,
-  //   );
-  //   return data[0].sha;
-  // },
+  async getLatestCommit(user: User, org: Organization, accessToken?: string): Promise<string> {
+    const githubAccessToken = accessToken ?? (await UsersService.getUserGitHubAccessToken(user.id));
+    if (!githubAccessToken) {
+      throw new Error("User doesn't have an active token");
+    }
+    const { data } = await makeGet(
+      `https://api.github.com/repos/${org.githubRepo}/commits?per_page=1`,
+      githubAccessToken,
+    );
+    return data[0].sha;
+  },
 
-  // async getChangedFilesSinceCommit(
-  //   user: User,
-  //   org: Organization,
-  //   commitSha: string,
-  //   latestCommitSha: string = 'HEAD',
-  // ): Promise<GitHubFile[]> {
-  //   if (!user.githubAccessToken) {
-  //     throw new Error("User doesn't have an active token");
-  //   }
-  //   const { data } = await makeGet(
-  //     `https://api.github.com/repos/${org.githubRepo}/compare/${commitSha}...${latestCommitSha}`,
-  //     user.githubAccessToken,
-  //   );
-  //   return data.files.map((file: any) => ({
-  //     name: file.filename,
-  //     downloadUrl: file.raw_url,
-  //     sha: file.sha,
-  //   }));
-  // },
+  async getChangedFilesSinceCommit(
+    user: User,
+    org: Organization,
+    commitSha: string,
+    latestCommitSha: string = 'HEAD',
+    accessToken?: string,
+  ): Promise<GitHubFile[]> {
+    const githubAccessToken = accessToken ?? (await UsersService.getUserGitHubAccessToken(user.id));
+    if (!githubAccessToken) {
+      throw new Error("User doesn't have an active token");
+    }
+    const { data } = await makeGet(
+      `https://api.github.com/repos/${org.githubRepo}/compare/${commitSha}...${latestCommitSha}`,
+      githubAccessToken,
+    );
+    return data.files.map((file: any) => ({
+      name: file.filename,
+      downloadUrl: file.raw_url,
+      sha: file.sha,
+    }));
+  },
 
   async getRepositories(user: User): Promise<GitHubRepo[]> {
     const githubToken = await UsersService.getUserGitHubAccessToken(user.id);
@@ -66,7 +62,6 @@ export const GitHubService = {
           logo: repo.owner.avatar_url,
         }),
       );
-      console.log(repos);
 
       const linkHeader = response.headers.get('Link');
       const nextUrl = linkHeader
@@ -91,42 +86,50 @@ export const GitHubService = {
     return allRepos;
   },
 
-  // async readProjectSource(
-  //   user: User,
-  //   org: Organization,
-  //   path: string,
-  //   sha?: string,
-  // ): Promise<GitHubFile[]> {
-  //   if (!user.githubAccessToken) {
-  //     throw new Error("User doesn't have an active token");
-  //   }
-  //   const url = `https://api.github.com/repos/${org.githubRepo}/contents/${path}${
-  //     sha ? `?ref=${sha}` : ''
-  //   }`;
-  //   const { data: files } = await makeGet(url, user.githubAccessToken);
-  //   return files.map((file: any) => ({
-  //     name: file.name,
-  //     downloadUrl: file.download_url,
-  //     sha: file.sha,
-  //   }));
-  // },
+  async readProjectSource(
+    user: User,
+    org: Organization,
+    path: string,
+    sha?: string,
+  ): Promise<GitHubFile[]> {
+    const githubAccessToken = await UsersService.getUserGitHubAccessToken(user.id);
+    if (!githubAccessToken) {
+      throw new Error("User doesn't have an active token");
+    }
+    const url = `https://api.github.com/repos/${org.githubRepo}/contents/${path}${
+      sha ? `?ref=${sha}` : ''
+    }`;
+    const { data: files } = await makeGet(url, githubAccessToken);
+    return files.map((file: any) => ({
+      name: file.name,
+      downloadUrl: file.download_url,
+      sha: file.sha,
+    }));
+  },
 
-  // async readProjectFile(user: User, org: Organization, fileName: string, branch?: string) {
-  //   if (!user.githubAccessToken) {
-  //     throw new Error("User doesn't have an active token");
-  //   }
-  //   try {
-  //     const { data: file } = await makeGet(
-  //       `https://api.github.com/repos/${org.githubRepo}/contents/${fileName}${
-  //         branch ? `?ref=${branch}` : ''
-  //       }`,
-  //       user.githubAccessToken,
-  //     );
-  //     return file;
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // },
+  async readProjectFile(
+    user: User,
+    org: Organization,
+    fileName: string,
+    branch?: string,
+    accessToken?: string,
+  ) {
+    const githubAccessToken = accessToken ?? (await UsersService.getUserGitHubAccessToken(user.id));
+    if (!githubAccessToken) {
+      throw new Error("User doesn't have an active token");
+    }
+    try {
+      const { data: file } = await makeGet(
+        `https://api.github.com/repos/${org.githubRepo}/contents/${fileName}${
+          branch ? `?ref=${branch}` : ''
+        }`,
+        githubAccessToken,
+      );
+      return file;
+    } catch (error) {
+      return null;
+    }
+  },
 
   // async updateProjectSource(
   //   user: User,

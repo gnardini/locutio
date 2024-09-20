@@ -1,8 +1,7 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
 import { apiRouter } from '@backend/core/apiRouter';
 import express from 'express';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { renderPage } from 'vike/server';
 
 const __filename = fileURLToPath(import.meta.url);

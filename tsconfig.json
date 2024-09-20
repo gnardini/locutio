@@ -21,6 +21,7 @@
     "paths": {
       "@frontend/*": ["frontend/*"],
       "@backend/*": ["backend/*"],
+      "@locales/*": ["locales/*"],
       "@type/*": ["types/*"]
     }
   },

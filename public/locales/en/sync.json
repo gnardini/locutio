@@ -1,0 +1,11 @@
+{
+  "fetchLatestCommitError": "Failed to fetch latest commit",
+  "projectSyncedSuccess": "Project Synced Successfully",
+  "syncProjectError": "Failed to Sync Project",
+  "initialSetupPending": "The initial setup of the project is pending",
+  "setup": "Set up",
+  "loading": "Loading...",
+  "projectUpToDate": "Project up to date",
+  "updatePending": "There's an update pending",
+  "syncUp": "Sync up"
+}

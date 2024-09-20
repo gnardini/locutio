@@ -204,7 +204,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.7":
+"@babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.7":
   version: 7.25.6
   resolution: "@babel/runtime@npm:7.25.6"
   dependencies:
@@ -2070,7 +2070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^4.0.0":
+"cross-fetch@npm:4.0.0, cross-fetch@npm:^4.0.0":
   version: 4.0.0
   resolution: "cross-fetch@npm:4.0.0"
   dependencies:
@@ -3231,6 +3231,42 @@ __metadata:
   dependencies:
     ms: "npm:^2.0.0"
   checksum: f34a2c20161d02303c2807badec2f3b49cbfbbb409abd4f95a07377ae01cfe6b59e3d15ac609cffcd8f2521f0eb37b7e1091acf65da99aa2a4f1ad63c21e7e7a
+  languageName: node
+  linkType: hard
+
+"i18next-browser-languagedetector@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "i18next-browser-languagedetector@npm:8.0.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.2"
+  checksum: 08a7c747ec18a0743b54390a0b42836d814b15fb49c92b90c259298e6a6e7e001ff9df99d0fd308283a34fceea53b4d9053aa1695a37f696bc04160017bbb524
+  languageName: node
+  linkType: hard
+
+"i18next-http-backend@npm:^2.6.1":
+  version: 2.6.1
+  resolution: "i18next-http-backend@npm:2.6.1"
+  dependencies:
+    cross-fetch: "npm:4.0.0"
+  checksum: d85b25cd1543906b3c67c30a8dca0af0e66b8c13c53139a2ab65612eb7c047d78e84741e952ba267fa0214264a1fca99ce77aea5ab09919eedcdba2634606c85
+  languageName: node
+  linkType: hard
+
+"i18next-resources-to-backend@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "i18next-resources-to-backend@npm:1.2.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.2"
+  checksum: ba83152726aae34ab34bb152518b666d4393bf816c91ab6e1064090cbbb9b235d3dfbcf9d5640c825819644fddcaf7799f581cdbe6abb3e7b11d58c50dc4644a
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^23.15.1":
+  version: 23.15.1
+  resolution: "i18next@npm:23.15.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.2"
+  checksum: 06bf6c45c70ebe8cc1181ce5f367f6a60acc798abb1926329e67e092a25762cabbfed64ac149745d515f724d2a6fef3bf809bd4fd8f505a7966e9e4dd2e3fd69
   languageName: node
   linkType: hard
 
@@ -5535,6 +5571,10 @@ __metadata:
     cross-fetch: "npm:^4.0.0"
     dotenv: "npm:^16.4.5"
     express: "npm:^4.19.2"
+    i18next: "npm:^23.15.1"
+    i18next-browser-languagedetector: "npm:^8.0.0"
+    i18next-http-backend: "npm:^2.6.1"
+    i18next-resources-to-backend: "npm:^1.2.1"
     jsonwebtoken: "npm:^9.0.1"
     knex: "npm:~0.95.9"
     luxon: "npm:^3.4.4"

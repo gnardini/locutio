@@ -1,0 +1,8 @@
+{
+  "billedAnnually": "Billed annually ${{annualPrice}} (2 months free)",
+  "includesAICredits": "Includes ${{aiCredits}} in AI credits/mo",
+  "upToManagers": "Up to {{managers}} managers",
+  "contactUs": "Contact Us",
+  "getStarted": "Get Started",
+  "pricingPlans": "Pricing Plans"
+}
