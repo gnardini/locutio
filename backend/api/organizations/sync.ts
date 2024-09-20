@@ -2,15 +2,11 @@ import { ApiError, createApiHandler } from '@backend/core/apiHandler';
 import { initDatabase } from '@backend/db/db';
 import OrganizationsService from '@backend/services/OrganizationsService';
 import { RepoSyncService } from '@backend/services/RepoSyncService';
-import { z } from 'zod';
-
-const syncProjectSchema = z.object({
-  id: z.string(),
-});
+import { syncOrganizationSchema } from '@backend/schemas/organizationSync';
 
 export default createApiHandler({
   method: 'POST',
-  schema: syncProjectSchema,
+  schema: syncOrganizationSchema,
   requiresAuth: true,
   handler: async (data, { user }) => {
     await initDatabase();
