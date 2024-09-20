@@ -103,7 +103,10 @@ export const GitHubService = {
     const url = `https://api.github.com/repos/${org.githubRepo}/contents/${path}${
       sha ? `?ref=${sha}` : ''
     }`;
-    const { data: files } = await makeGet(url, githubAccessToken);
+    const { data: files, status } = await makeGet(url, githubAccessToken);
+    if (status === 404) {
+      return [];
+    }
     return files.map((file: any) => ({
       name: file.name,
       downloadUrl: file.download_url,
