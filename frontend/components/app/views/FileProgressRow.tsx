@@ -44,7 +44,7 @@ export const FileProgressRow: React.FC<FileProgressRowProps> = ({
           <Button
             type={ButtonType.Secondary}
             onClick={handleTranslate}
-            disabled={loadingTranslate}
+            loading={loadingTranslate}
             className="py-1 px-2 text-xs"
           >
             Translate
