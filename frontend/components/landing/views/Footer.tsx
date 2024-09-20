@@ -12,7 +12,7 @@ export function Footer() {
         <p className="text-text-primary ">
           Built by
           <a
-            href="https://gnardini.com/ref=TODO"
+            href="https://gnardini.com/ref=locutio"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-1 hover:text-secondary-accent"
@@ -22,7 +22,7 @@ export function Footer() {
         </p>
         <div className="flex items-center space-x-6">
           <a
-            href="https://github.com/gnardini"
+            href="https://github.com/gnardini/locutio"
             target="_blank"
             rel="noopener noreferrer"
             className="text-text-primary hover:text-secondary-accent"
