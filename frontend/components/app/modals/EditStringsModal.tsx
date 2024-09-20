@@ -61,11 +61,17 @@ const EditStringsModal: React.FC<EditStringsModalProps> = ({
   };
 
   const handleUpdateString = useCallback((key: string, value: string) => {
-    setStrings((prevStrings) => ({
-      ...prevStrings,
-      [key]: value,
-    }));
-  }, []);
+    setStrings((prevStrings) => {
+      const newStrings = {
+        ...prevStrings,
+        [key]: value,
+      };
+      const translatedCount = Object.values(newStrings).filter(str => str.length > 0).length;
+      const totalCount = Object.keys(baseStrings).length;
+      onStringsUpdated(file, translatedCount, totalCount);
+      return newStrings;
+    });
+  }, [baseStrings, file, onStringsUpdated]);
 
   if (error || translateError)
     return (
