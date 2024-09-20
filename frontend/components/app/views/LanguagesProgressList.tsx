@@ -1,24 +1,16 @@
 import { useLanguageStringCountsQuery } from '@frontend/queries/strings/useLanguageStringCountsQuery';
-import { useFileStringCountsQuery } from '@frontend/queries/strings/useFileStringCountsQuery';
 import { Organization } from '@type/organization';
 import React, { useEffect, useState } from 'react';
+import { FileStringCountsList } from './FileStringCountsList';
 
 interface LanguagesProgressListProps {
   organization: Organization;
 }
 
-interface FileStringCount {
-  file: string;
-  baseCount: number;
-  compareCount: number;
-}
-
 export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ organization }) => {
   const { execute: executeLanguageCounts, loading: loadingLanguageCounts, error: errorLanguageCounts } = useLanguageStringCountsQuery();
-  const { execute: executeFileCounts, loading: loadingFileCounts, error: errorFileCounts } = useFileStringCountsQuery();
   const [languageCounts, setLanguageCounts] = useState<{ language: string; count: number }[]>([]);
   const [expandedLanguage, setExpandedLanguage] = useState<string | null>(null);
-  const [fileCounts, setFileCounts] = useState<FileStringCount[]>([]);
 
   useEffect(() => {
     executeLanguageCounts({ organizationId: organization.id }).then((result) => {
@@ -28,17 +20,8 @@ export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ or
     });
   }, [organization.id]);
 
-  const handleLanguageClick = async (language: string) => {
-    if (expandedLanguage === language) {
-      setExpandedLanguage(null);
-      setFileCounts([]);
-    } else {
-      setExpandedLanguage(language);
-      const result = await executeFileCounts({ organizationId: organization.id, language });
-      if (result) {
-        setFileCounts(result.fileCounts);
-      }
-    }
+  const handleLanguageClick = (language: string) => {
+    setExpandedLanguage(expandedLanguage === language ? null : language);
   };
 
   if (loadingLanguageCounts) return <div>Loading...</div>;
@@ -79,44 +62,13 @@ export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ or
             </div>
             {isExpanded && (
               <div className="mt-2 pl-4">
-                {loadingFileCounts ? (
-                  <div>Loading file counts...</div>
-                ) : errorFileCounts ? (
-                  <div>Error loading file counts: {errorFileCounts}</div>
-                ) : (
-                  <FileStringCountsList fileCounts={fileCounts} baseLanguage={baseLanguage} />
-                )}
+                <FileStringCountsList
+                  organizationId={organization.id}
+                  language={lc.language}
+                  baseLanguage={baseLanguage}
+                />
               </div>
             )}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-const FileStringCountsList: React.FC<{ fileCounts: FileStringCount[]; baseLanguage: string }> = ({
-  fileCounts,
-  baseLanguage,
-}) => {
-  return (
-    <div className="space-y-2">
-      {fileCounts.map((fc) => {
-        const progress = fc.baseCount > 0 ? (fc.compareCount / fc.baseCount) * 100 : 0;
-        return (
-          <div key={fc.file} className="text-sm">
-            <div className="flex justify-between mb-1">
-              <span>{fc.file}</span>
-              <span>
-                {fc.compareCount}/{fc.baseCount} strings ({progress.toFixed(1)}%)
-              </span>
-            </div>
-            <div className="w-full bg-gray-700 rounded-full h-1.5">
-              <div
-                className="bg-secondary-accent h-1.5 rounded-full"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
           </div>
         );
       })}
