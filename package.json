@@ -48,6 +48,7 @@
     "i18next-resources-to-backend": "^1.2.1",
     "jsonwebtoken": "^9.0.1",
     "knex": "~0.95.9",
+    "llm-logger": "^0.0.4",
     "luxon": "^3.4.4",
     "micro": "^10.0.1",
     "multer": "^1.4.5-lts.1",

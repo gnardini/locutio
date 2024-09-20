@@ -23,6 +23,7 @@ export const STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY ?? '';
 
 export const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY ?? '';
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
+export const LLM_LOGGER_API_KEY = process.env.LLM_LOGGER_API_KEY ?? '';
 
 export const GITHUB_CLIENT_ID = process.env.PUBLIC_ENV__GITHUB_CLIENT_ID ?? '';
 export const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET ?? '';

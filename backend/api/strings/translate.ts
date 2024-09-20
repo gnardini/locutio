@@ -1,8 +1,8 @@
 import { ApiError, createApiHandler } from '@backend/core/apiHandler';
+import { translateSchema } from '@backend/schemas/translate';
 import { AIService, system } from '@backend/services/AIService';
 import OrganizationsService from '@backend/services/OrganizationsService';
 import { StringsService } from '@backend/services/StringsService';
-import { translateSchema } from '@backend/schemas/translate';
 
 const handler = createApiHandler({
   method: 'POST',
@@ -21,18 +21,19 @@ const handler = createApiHandler({
       StringsService.fetchStrings(organizationId, language, file),
     ]);
 
-    const response = await AIService.makeRequest([
-      system(
-        `You are the Senior ${
-          organization.baseLanguage
-        } to ${language} translator at Locutio, an agency that translates content for startups and big companies.
+    const response = await AIService.makeRequest(
+      [
+        system(
+          `You are the Senior ${
+            organization.baseLanguage
+          } to ${language} translator at Locutio, an agency that translates content for startups and big companies.
 You will receive the ${
-          organization.baseLanguage
-        } contents of the client's website and provide strings in ${language} as a result.
+            organization.baseLanguage
+          } contents of the client's website and provide strings in ${language} as a result.
 
 The client's app is called ${organization.name}, here is its description: ${
-          organization.description
-        }
+            organization.description
+          }
 
 Here is the ${organization.baseLanguage} file:
 ${JSON.stringify(baseStrings, null, 2)}
@@ -45,8 +46,11 @@ ${
 }
 
 Output a JSON with the new or updated ${language} strings. If there are strings that are already properly translated, you don't need to include them in your response.`,
-      ),
-    ]);
+        ),
+      ],
+      ['translate'],
+      user?.id ?? null,
+    );
 
     let translatedStrings: Record<string, string>;
     try {

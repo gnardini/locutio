@@ -3683,6 +3683,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"llm-logger@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "llm-logger@npm:0.0.4"
+  dependencies:
+    axios: "npm:^1.7.7"
+  checksum: d3600d59a9b78a720a2678987026de824b6f36f0782639cf72018739a4b5cb9b3a915ae785057785112173706e42715b6491b40a86c67ab56c436b3f0963790f
+  languageName: node
+  linkType: hard
+
 "lodash.includes@npm:^4.3.0":
   version: 4.3.0
   resolution: "lodash.includes@npm:4.3.0"
@@ -5577,6 +5586,7 @@ __metadata:
     i18next-resources-to-backend: "npm:^1.2.1"
     jsonwebtoken: "npm:^9.0.1"
     knex: "npm:~0.95.9"
+    llm-logger: "npm:^0.0.4"
     luxon: "npm:^3.4.4"
     micro: "npm:^10.0.1"
     multer: "npm:^1.4.5-lts.1"
