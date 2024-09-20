@@ -1,7 +1,8 @@
 import { useLanguageStringCountsQuery } from '@frontend/queries/strings/useLanguageStringCountsQuery';
 import { Organization } from '@type/organization';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FileStringCountsList } from './FileStringCountsList';
+import { SyncFileStringsButton } from './SyncFileStringsButton';
 
 interface LanguagesProgressListProps {
   organization: Organization;
@@ -72,6 +73,7 @@ export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ or
             </div>
             {isExpanded && (
               <div className="mt-2 pl-4">
+                <SyncFileStringsButton organizationId={organization.id} language={lc.language} />
                 <FileStringCountsList
                   organizationId={organization.id}
                   language={lc.language}

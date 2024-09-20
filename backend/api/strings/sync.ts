@@ -1,15 +1,15 @@
 import { ApiError, createApiHandler } from '@backend/core/apiHandler';
 import { syncStringsSchema } from '@backend/schemas/syncStrings';
+import { GitHubService } from '@backend/services/GitHubService';
 import OrganizationsService from '@backend/services/OrganizationsService';
 import { StringsService } from '@backend/services/StringsService';
-import { GitHubService } from '@backend/services/GitHubService';
 
 export default createApiHandler({
   method: 'POST',
   schema: syncStringsSchema,
   requiresAuth: true,
   handler: async (data, { user }) => {
-    const { organizationId, language, file } = data;
+    const { organizationId, language } = data;
 
     if (!(await OrganizationsService.userOwnsOrganization(user.id, organizationId))) {
       throw new ApiError(403, 'User does not have permission to access this organization');
@@ -20,15 +20,19 @@ export default createApiHandler({
       throw new ApiError(404, 'Organization not found');
     }
 
-    const strings = await StringsService.fetchStrings(organizationId, language, file);
-    
-    await GitHubService.updateProjectSource(
-      user,
-      organization,
-      language,
-      file,
-      JSON.stringify(strings, null, 2),
-    );
+    const files = await StringsService.fetchFiles(organizationId, language);
+    console.log({ files });
+
+    for (const file of files) {
+      const strings = await StringsService.fetchStrings(organizationId, language, file);
+      await GitHubService.updateProjectSource(
+        user,
+        organization,
+        language,
+        file,
+        JSON.stringify(strings, null, 2),
+      );
+    }
 
     return { success: true };
   },

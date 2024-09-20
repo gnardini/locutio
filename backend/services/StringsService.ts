@@ -1,5 +1,5 @@
 import { FileStringCount, LanguageStringCount, Strings } from '@type/strings';
-import { getDatabase } from '../db/db';
+import { db, getDatabase } from '../db/db';
 import { parseNumber } from './dbHelpers';
 
 export const StringsService = {
@@ -22,7 +22,6 @@ export const StringsService = {
     key: string,
     value: string,
   ) {
-    const db = await getDatabase();
     await db('strings')
       .insert({
         organization_id: organizationId,
@@ -36,8 +35,18 @@ export const StringsService = {
       .merge();
   },
 
+  async fetchFiles(organizationId: string, language: string): Promise<string[]> {
+    const files = await db('strings')
+      .where({
+        organization_id: organizationId,
+        language,
+      })
+      .groupBy('file')
+      .pluck('file');
+    return files;
+  },
+
   async fetchStrings(organizationId: string, language: string, file: string): Promise<Strings> {
-    const db = await getDatabase();
     const rows = await db('strings').where({
       organization_id: organizationId,
       language,
