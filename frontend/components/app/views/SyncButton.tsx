@@ -1,5 +1,6 @@
 import { Button } from '@frontend/components/common/Button';
 import { useNotification } from '@frontend/context/NotificationContext';
+import { useGetLatestCommitQuery } from '@frontend/queries/organizations/useGetLatestCommitQuery';
 import { useSyncQuery } from '@frontend/queries/organizations/useSyncQuery';
 import { Organization } from '@type/organization';
 import React, { useEffect, useState } from 'react';
@@ -12,9 +13,7 @@ interface Props {
 export const SyncButton: React.FC<Props> = ({ organization }) => {
   const { t } = useTranslation('sync');
   const { execute: runQuery, loading } = useSyncQuery();
-  const { execute: getLatestCommit, loading: loadingLatestCommit } = useQuery<{
-    latestCommitSha: string;
-  }>('GET', '/api/getLatestCommit');
+  const { execute: getLatestCommit, loading: loadingLatestCommit } = useGetLatestCommitQuery();
   const { showNotification } = useNotification();
   const [latestCommitSha, setLatestCommitSha] = useState<string | null>(null);
   const [latestSyncedCommitSha, setLatestSyncedCommitSha] = useState<string | null>(
@@ -24,7 +23,7 @@ export const SyncButton: React.FC<Props> = ({ organization }) => {
   useEffect(() => {
     const fetchLatestCommit = async () => {
       try {
-        const { latestCommitSha } = await getLatestCommit({ projectId: organization.id });
+        const { latestCommitSha } = await getLatestCommit({ organizationId: organization.id });
         setLatestCommitSha(latestCommitSha);
       } catch (error) {
         console.error('Failed to fetch latest commit:', error);
@@ -53,7 +52,7 @@ export const SyncButton: React.FC<Props> = ({ organization }) => {
       {latestSyncedCommitSha === null ? (
         <>
           <p className="text-sm text-gray-600 mb-2">{t('initialSetupPending')}</p>
-          <Button onClick={syncProject} loading={loading} className="w-fit">
+          <Button onClick={syncProject} loading={loading}>
             {t('setup')}
           </Button>
         </>
@@ -64,7 +63,7 @@ export const SyncButton: React.FC<Props> = ({ organization }) => {
       ) : (
         <>
           <p className="text-sm text-gray-600 mb-2">{t('updatePending')}</p>
-          <Button onClick={syncProject} loading={loading} className="w-fit">
+          <Button onClick={syncProject} loading={loading}>
             {t('syncUp')}
           </Button>
         </>

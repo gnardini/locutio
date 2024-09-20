@@ -6,6 +6,7 @@ import { Tab } from '@type/tabs';
 import React, { useState } from 'react';
 import { Button, ButtonType } from '@frontend/components/common/Button';
 import OrganizationSettingsModal from './modals/OrganizationSettingsModal';
+import { SyncButton } from '@frontend/components/app/views/SyncButton';
 
 interface AppScreenProps {
   activeOrg: Organization;
@@ -20,6 +21,7 @@ const AppScreen: React.FC<AppScreenProps> = ({ activeOrg, membershipType }) => {
       <div className="max-w-[1000px] mx-auto mt-10 flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">{activeOrg.name}</h1>
+          
           <Button type={ButtonType.Secondary} onClick={() => setShowSettingsModal(true)}>
             Organization Settings
           </Button>
@@ -28,6 +30,8 @@ const AppScreen: React.FC<AppScreenProps> = ({ activeOrg, membershipType }) => {
             closeModal={() => setShowSettingsModal(false)}
             organization={activeOrg}
           />
+
+          <SyncButton organization={activeOrg} />
         </div>
       </div>
     </Container>
