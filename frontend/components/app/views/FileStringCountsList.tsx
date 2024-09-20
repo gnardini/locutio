@@ -1,7 +1,8 @@
-
 import { useFileStringCountsQuery } from '@frontend/queries/strings/useFileStringCountsQuery';
+import { useTranslateQuery } from '@frontend/queries/strings/useTranslateQuery';
 import React, { useEffect, useState, useCallback } from 'react';
 import EditStringsModal from '../modals/EditStringsModal';
+import { Button, ButtonType } from '@frontend/components/common/Button';
 
 interface FileStringCount {
   file: string;
@@ -27,6 +28,7 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
     loading: loadingFileCounts,
     error: errorFileCounts,
   } = useFileStringCountsQuery();
+  const { execute: executeTranslate, loading: loadingTranslate } = useTranslateQuery();
   const [fileCounts, setFileCounts] = useState<FileStringCount[]>([]);
 
   const updateFileCount = useCallback((file: string, translatedCount: number, totalCount: number) => {
@@ -54,12 +56,28 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
     });
   }, [organizationId, language, onLanguageCountUpdate]);
 
-  if (loadingFileCounts) return <div>Loading file counts...</div>;
-  if (errorFileCounts) return <div>Error loading file counts: {errorFileCounts}</div>;
-
   const handleFileClick = (file: string) => {
     setSelectedFile(file);
   };
+
+  const handleTranslate = async (file: string) => {
+    try {
+      const result = await executeTranslate({ organizationId, language, file });
+      if (result && result.success) {
+        const updatedCounts = await executeFileCounts({ organizationId, language });
+        if (updatedCounts) {
+          setFileCounts(updatedCounts.fileCounts);
+          const totalTranslatedCount = updatedCounts.fileCounts.reduce((sum, fc) => sum + fc.compareCount, 0);
+          onLanguageCountUpdate(language, totalTranslatedCount);
+        }
+      }
+    } catch (err) {
+      console.error('Translation failed:', err);
+    }
+  };
+
+  // if (loadingFileCounts) return <div>Loading file counts...</div>;
+  if (errorFileCounts) return <div>Error loading file counts: {errorFileCounts}</div>;
 
   return (
     <div className="space-y-2">
@@ -68,14 +86,23 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
         return (
           <div
             key={fc.file}
-            className="text-sm cursor-pointer"
-            onClick={() => handleFileClick(fc.file)}
+            className="text-sm"
           >
-            <div className="flex justify-between mb-1">
-              <span>{fc.file}</span>
-              <span>
-                {fc.compareCount}/{fc.baseCount} strings ({progress.toFixed(1)}%)
-              </span>
+            <div className="flex justify-between mb-1 items-center">
+              <span className="cursor-pointer" onClick={() => handleFileClick(fc.file)}>{fc.file}</span>
+              <div className="flex items-center space-x-2">
+                <Button
+                  type={ButtonType.Secondary}
+                  onClick={() => handleTranslate(fc.file)}
+                  disabled={loadingTranslate}
+                  className="py-1 px-2 text-xs"
+                >
+                  Translate
+                </Button>
+                <span>
+                  {fc.compareCount}/{fc.baseCount} strings ({progress.toFixed(1)}%)
+                </span>
+              </div>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-1.5">
               <div
