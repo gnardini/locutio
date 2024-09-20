@@ -6,6 +6,7 @@ import { Tab } from '@type/tabs';
 import { MembershipType } from '@type/user';
 import React, { useState } from 'react';
 import OrganizationSettingsModal from './modals/OrganizationSettingsModal';
+import { LanguagesProgressList } from './views/LanguagesProgressList';
 
 interface AppScreenProps {
   activeOrg: Organization;
@@ -32,6 +33,8 @@ const AppScreen: React.FC<AppScreenProps> = ({ activeOrg, membershipType }) => {
 
           <SyncButton organization={activeOrg} />
         </div>
+        
+        <LanguagesProgressList organization={activeOrg} />
       </div>
     </Container>
   );
