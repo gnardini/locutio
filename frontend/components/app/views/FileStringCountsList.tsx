@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useFileStringCountsQuery } from '@frontend/queries/strings/useFileStringCountsQuery';
+import EditStringsModal from '../modals/EditStringsModal';
 
 interface FileStringCount {
   file: string;
@@ -20,6 +21,7 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
 }) => {
   const { execute: executeFileCounts, loading: loadingFileCounts, error: errorFileCounts } = useFileStringCountsQuery();
   const [fileCounts, setFileCounts] = useState<FileStringCount[]>([]);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
   React.useEffect(() => {
     executeFileCounts({ organizationId, language }).then((result) => {
@@ -32,12 +34,16 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
   if (loadingFileCounts) return <div>Loading file counts...</div>;
   if (errorFileCounts) return <div>Error loading file counts: {errorFileCounts}</div>;
 
+  const handleFileClick = (file: string) => {
+    setSelectedFile(file);
+  };
+
   return (
     <div className="space-y-2">
       {fileCounts.map((fc) => {
         const progress = fc.baseCount > 0 ? (fc.compareCount / fc.baseCount) * 100 : 0;
         return (
-          <div key={fc.file} className="text-sm">
+          <div key={fc.file} className="text-sm cursor-pointer" onClick={() => handleFileClick(fc.file)}>
             <div className="flex justify-between mb-1">
               <span>{fc.file}</span>
               <span>
@@ -53,6 +59,16 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
           </div>
         );
       })}
+      {selectedFile && (
+        <EditStringsModal
+          visible={!!selectedFile}
+          closeModal={() => setSelectedFile(null)}
+          organizationId={organizationId}
+          language={language}
+          baseLanguage={baseLanguage}
+          file={selectedFile}
+        />
+      )}
     </div>
   );
 };
