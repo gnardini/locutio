@@ -1,4 +1,4 @@
-import { Strings, LanguageStringCount, FileStringCount } from '@type/strings';
+import { FileStringCount, LanguageStringCount, Strings } from '@type/strings';
 import { getDatabase } from '../db/db';
 import { parseNumber } from './dbHelpers';
 
@@ -9,7 +9,6 @@ export const StringsService = {
     fileName: string,
     fileContent: string,
   ) {
-    console.log('update', language, fileName);
     const db = await getDatabase();
     await db.transaction(async (trx) => {
       await handleObject(trx, organizationId, language, fileName, fileContent);
