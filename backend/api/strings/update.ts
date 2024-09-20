@@ -1,6 +1,5 @@
 import { ApiError, createApiHandler } from '@backend/core/apiHandler';
 import { updateStringSchema } from '@backend/schemas/updateString';
-import { GitHubService } from '@backend/services/GitHubService';
 import OrganizationsService from '@backend/services/OrganizationsService';
 import { StringsService } from '@backend/services/StringsService';
 
@@ -20,13 +19,7 @@ const handler = createApiHandler({
 
     await StringsService.updateString(organizationId, language, file, key, value);
 
-    await GitHubService.updateProjectSource(
-      user,
-      org,
-      language,
-      file,
-      JSON.stringify(await StringsService.fetchStrings(organizationId, language, file), null, 2),
-    );
+    await StringsService.fetchAndTransformStrings(user, org, language, file);
 
     return { success: true };
   },

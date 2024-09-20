@@ -67,13 +67,7 @@ Output a JSON with the new or updated ${language} strings. If there are strings 
       await StringsService.updateString(organizationId, language, file, key, value);
     }
 
-    await GitHubService.updateProjectSource(
-      user,
-      organization,
-      language,
-      file,
-      JSON.stringify(await StringsService.fetchStrings(organizationId, language, file), null, 2),
-    );
+    await StringsService.fetchAndTransformStrings(user, organization, language, file);
 
     return { success: true };
   },

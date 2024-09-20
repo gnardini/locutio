@@ -20,10 +20,19 @@ export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ or
   useEffect(() => {
     executeLanguageCounts({ organizationId: organization.id }).then((result) => {
       if (result) {
-        setLanguageCounts(result.languageCounts);
+        const fetchedLanguages = new Set(result.languageCounts.map(lc => lc.language));
+        const completeLanguageCounts = [...result.languageCounts];
+
+        organization.languages.forEach(lang => {
+          if (!fetchedLanguages.has(lang)) {
+            completeLanguageCounts.push({ language: lang, count: 0 });
+          }
+        });
+
+        setLanguageCounts(completeLanguageCounts);
       }
     });
-  }, [organization.id]);
+  }, [organization.id, organization.languages]);
 
   const handleLanguageClick = (language: string) => {
     setExpandedLanguage(expandedLanguage === language ? null : language);
