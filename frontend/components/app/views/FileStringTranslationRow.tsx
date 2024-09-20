@@ -1,7 +1,7 @@
 import { Button, ButtonType } from '@frontend/components/common/Button';
 import { useUpdateStringQuery } from '@frontend/queries/strings/useUpdateStringQuery';
 import { languages } from '@frontend/utils/languages';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface FileStringTranslationRowProps {
   organizationId: string;
@@ -11,6 +11,7 @@ interface FileStringTranslationRowProps {
   stringKey: string;
   baseValue: string;
   initialValue: string;
+  onUpdateString: (key: string, value: string) => void;
 }
 
 const FileStringTranslationRow: React.FC<FileStringTranslationRowProps> = ({
@@ -21,10 +22,16 @@ const FileStringTranslationRow: React.FC<FileStringTranslationRowProps> = ({
   stringKey,
   baseValue,
   initialValue,
+  onUpdateString,
 }) => {
   const [value, setValue] = useState(initialValue);
   const [isModified, setIsModified] = useState(false);
   const { execute: updateString, loading: isSaving } = useUpdateStringQuery();
+
+  useEffect(() => {
+    setValue(initialValue);
+    setIsModified(false);
+  }, [initialValue]);
 
   const handleChange = (newValue: string) => {
     setValue(newValue);
@@ -47,6 +54,7 @@ const FileStringTranslationRow: React.FC<FileStringTranslationRowProps> = ({
       });
       if (result && result.success) {
         setIsModified(false);
+        onUpdateString(stringKey, value);
       }
     } catch (err) {
       console.error('Failed to update string:', err);

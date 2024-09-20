@@ -3,7 +3,7 @@ import { Loader } from '@frontend/components/common/Loader';
 import { Modal } from '@frontend/components/common/Modal';
 import { useFetchStringsQuery } from '@frontend/queries/strings/useFetchStringsQuery';
 import { useTranslateQuery } from '@frontend/queries/strings/useTranslateQuery';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import FileStringTranslationRow from '../views/FileStringTranslationRow';
 
 interface EditStringsModalProps {
@@ -54,6 +54,13 @@ const EditStringsModal: React.FC<EditStringsModalProps> = ({
     }
   };
 
+  const handleUpdateString = useCallback((key: string, value: string) => {
+    setStrings((prevStrings) => ({
+      ...prevStrings,
+      [key]: value,
+    }));
+  }, []);
+
   if (error || translateError)
     return (
       <Modal visible={visible} closeModal={closeModal}>
@@ -99,6 +106,7 @@ const EditStringsModal: React.FC<EditStringsModalProps> = ({
                   stringKey={key}
                   baseValue={baseValue}
                   initialValue={strings[key] || ''}
+                  onUpdateString={handleUpdateString}
                 />
               ))}
             </tbody>
