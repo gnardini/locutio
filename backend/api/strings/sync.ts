@@ -21,7 +21,6 @@ export default createApiHandler({
     }
 
     const files = await StringsService.fetchFiles(organizationId, language);
-    console.log({ files });
 
     for (const file of files) {
       const strings = await StringsService.fetchStrings(organizationId, language, file);

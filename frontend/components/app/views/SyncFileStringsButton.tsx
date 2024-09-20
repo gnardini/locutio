@@ -25,7 +25,7 @@ export const SyncFileStringsButton: React.FC<SyncFileStringsButtonProps> = ({
   };
 
   return (
-    <Button onClick={handleSync} disabled={loading}>
+    <Button onClick={handleSync} disabled={loading} className='px-3 py-1 mb-4 text-sm'>
       {loading ? 'Syncing...' : 'Sync to GitHub'}
     </Button>
   );
