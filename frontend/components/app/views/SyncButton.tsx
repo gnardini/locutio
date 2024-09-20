@@ -51,10 +51,10 @@ export const SyncButton: React.FC<Props> = ({ organization }) => {
     <div className="mt-4">
       {latestSyncedCommitSha === null ? (
         <>
-          <p className="text-sm text-gray-600 mb-2">{t('initialSetupPending')}</p>
           <Button onClick={syncProject} loading={loading}>
             {t('setup')}
           </Button>
+          <p className="text-sm text-gray-600 mt-1">{t('initialSetupPending')}</p>
         </>
       ) : loadingLatestCommit ? (
         <p className="text-sm text-gray-600">{t('loading')}</p>

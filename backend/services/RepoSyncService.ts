@@ -96,7 +96,13 @@ async function processLanguage(
   commit: string,
   githubAccessToken: string,
 ) {
-  const fileDescriptions = await GitHubService.readProjectSource(user, project, filePath, commit);
+  const fileDescriptions = await GitHubService.readProjectSource(
+    user,
+    project,
+    filePath,
+    commit,
+    githubAccessToken,
+  );
 
   const files = await Promise.all(
     fileDescriptions.map((file) => makeGet(file.downloadUrl, githubAccessToken)),

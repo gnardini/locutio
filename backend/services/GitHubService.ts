@@ -1,3 +1,4 @@
+import { ApiError } from '@backend/core/apiHandler';
 import { makeGet } from '@backend/makeQuery';
 import { UsersService } from '@backend/services/UsersService';
 import { GitHubFile, GitHubRepo } from '@type/github';
@@ -15,7 +16,7 @@ export const GitHubService = {
   async getLatestCommit(user: User, org: Organization, accessToken?: string): Promise<string> {
     const githubAccessToken = accessToken ?? (await UsersService.getUserGitHubAccessToken(user.id));
     if (!githubAccessToken) {
-      throw new Error("User doesn't have an active token");
+      throw new ApiError(400, "User doesn't have an active token");
     }
     const { data } = await makeGet(
       `https://api.github.com/repos/${org.githubRepo}/commits?per_page=1`,
@@ -33,7 +34,7 @@ export const GitHubService = {
   ): Promise<GitHubFile[]> {
     const githubAccessToken = accessToken ?? (await UsersService.getUserGitHubAccessToken(user.id));
     if (!githubAccessToken) {
-      throw new Error("User doesn't have an active token");
+      throw new ApiError(400, "User doesn't have an active token");
     }
     const { data } = await makeGet(
       `https://api.github.com/repos/${org.githubRepo}/compare/${commitSha}...${latestCommitSha}`,
@@ -91,8 +92,9 @@ export const GitHubService = {
     org: Organization,
     path: string,
     sha?: string,
+    accessToken?: string,
   ): Promise<GitHubFile[]> {
-    const githubAccessToken = await UsersService.getUserGitHubAccessToken(user.id);
+    const githubAccessToken = accessToken ?? (await UsersService.getUserGitHubAccessToken(user.id));
     if (!githubAccessToken) {
       throw new Error("User doesn't have an active token");
     }

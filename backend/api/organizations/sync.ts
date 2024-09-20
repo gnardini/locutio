@@ -9,8 +9,6 @@ export default createApiHandler({
   schema: syncOrganizationSchema,
   requiresAuth: true,
   handler: async (data, { user }) => {
-    await initDatabase();
-
     const orgs = await OrganizationsService.getOrganizationsForUser(user.id);
     const organization = orgs.find((p) => p.id === data.id);
     if (!organization) {

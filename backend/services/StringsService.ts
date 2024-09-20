@@ -2,15 +2,21 @@ import { Strings } from '@type/strings';
 import { getDatabase } from '../db/db';
 
 export const StringsService = {
-  async updateStrings(projectId: string, language: string, fileName: string, fileContent: string) {
+  async updateStrings(
+    organizationId: string,
+    language: string,
+    fileName: string,
+    fileContent: string,
+  ) {
+    console.log('update', language, fileName);
     const db = await getDatabase();
     await db.transaction(async (trx) => {
-      await handleObject(trx, projectId, language, fileName, fileContent);
+      await handleObject(trx, organizationId, language, fileName, fileContent);
     });
   },
 
   async updateString(
-    projectId: string,
+    organizationId: string,
     language: string,
     file: string,
     key: string,
@@ -19,20 +25,20 @@ export const StringsService = {
     const db = await getDatabase();
     await db('strings')
       .insert({
-        project_id: projectId,
+        organization_id: organizationId,
         language,
         file,
         key,
         value,
       })
-      .onConflict(['project_id', 'language', 'file', 'key'])
+      .onConflict(['organization_id', 'language', 'file', 'key'])
       .merge();
   },
 
-  async fetchStrings(projectId: string, language: string, file: string): Promise<Strings> {
+  async fetchStrings(organizationId: string, language: string, file: string): Promise<Strings> {
     const db = await getDatabase();
     const rows = await db('strings').where({
-      project_id: projectId,
+      organization_id: organizationId,
       language,
       file,
     });
@@ -59,7 +65,7 @@ export const StringsService = {
 
 async function handleObject(
   trx: any,
-  projectId: string,
+  organizationId: string,
   language: string,
   fileName: string,
   obj: any,
@@ -67,21 +73,21 @@ async function handleObject(
 ) {
   for (const key in obj) {
     if (typeof obj[key] === 'object') {
-      await handleObject(trx, projectId, language, fileName, obj[key], `${prefix}${key}.`);
+      await handleObject(trx, organizationId, language, fileName, obj[key], `${prefix}${key}.`);
     } else {
       const fullKey = `${prefix}${key}`;
       const value = obj[key];
 
       await trx('strings')
         .insert({
-          project_id: projectId,
+          organization_id: organizationId,
           language,
           file: fileName,
           key: fullKey,
           value,
           updated_at: new Date(),
         })
-        .onConflict(['project_id', 'language', 'file', 'key'])
+        .onConflict(['organization_id', 'language', 'file', 'key'])
         .merge();
     }
   }

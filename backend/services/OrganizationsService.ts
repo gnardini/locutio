@@ -10,6 +10,7 @@ const transformOrganization = (org: any): Organization => ({
   description: org.description,
   inputFile: org.input_file,
   outputFile: org.output_file,
+  githubRepo: org.github_repo,
   baseLanguage: org.base_language,
   lastCommit: org.last_commit,
   mainBranch: org.main_branch,
@@ -58,7 +59,7 @@ const OrganizationsService = {
     if (updateData.mainBranch !== undefined) dbUpdateData.main_branch = updateData.mainBranch;
     if (updateData.lastCommit !== undefined) dbUpdateData.last_commit = updateData.lastCommit;
 
-    await db('projects').where('id', projectId).update(dbUpdateData);
+    await db('organizations').where('id', projectId).update(dbUpdateData);
   },
 
   getOrganizationsForUser: async (userId: string): Promise<Organization[]> => {

@@ -8,7 +8,7 @@ type GetLatestCommitOutput = z.infer<typeof getLatestCommitSchema.output>;
 export function useGetLatestCommitQuery() {
   return useQuery<GetLatestCommitInput, GetLatestCommitOutput>(
     'GET',
-    '/api/organizations/:organizationId/latest-commit',
+    '/api/organizations/latest-commit',
     getLatestCommitSchema
   );
 }
