@@ -48,7 +48,7 @@ export const SyncButton: React.FC<Props> = ({ organization }) => {
   };
 
   return (
-    <div className="mt-4">
+    <div>
       {latestSyncedCommitSha === null ? (
         <>
           <Button onClick={syncProject} loading={loading}>

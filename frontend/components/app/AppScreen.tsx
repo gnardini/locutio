@@ -19,9 +19,9 @@ const AppScreen: React.FC<AppScreenProps> = ({ activeOrg, membershipType }) => {
   return (
     <Container activeTab={Tab.App} className="flex-1 px-6 pb-6 overflow-auto" showSideBar>
       <div className="max-w-[1000px] mx-auto mt-10 flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">{activeOrg.name}</h1>
+        <h1 className="text-2xl font-bold">{activeOrg.name}</h1>
 
+        <div className="flex items-start gap-4">
           <Button type={ButtonType.Secondary} onClick={() => setShowSettingsModal(true)}>
             Organization Settings
           </Button>
@@ -33,7 +33,7 @@ const AppScreen: React.FC<AppScreenProps> = ({ activeOrg, membershipType }) => {
 
           <SyncButton organization={activeOrg} />
         </div>
-        
+
         <LanguagesProgressList organization={activeOrg} />
       </div>
     </Container>
