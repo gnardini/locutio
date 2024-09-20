@@ -3,6 +3,7 @@ import { Loader } from '@frontend/components/common/Loader';
 import { Modal } from '@frontend/components/common/Modal';
 import { useFetchStringsQuery } from '@frontend/queries/strings/useFetchStringsQuery';
 import { useTranslateQuery } from '@frontend/queries/strings/useTranslateQuery';
+import { useUpdateStringQuery } from '@frontend/queries/strings/useUpdateStringQuery';
 import { languages } from '@frontend/utils/languages';
 import React, { useEffect, useState } from 'react';
 
@@ -25,14 +26,18 @@ const EditStringsModal: React.FC<EditStringsModalProps> = ({
 }) => {
   const { execute: fetchStrings, loading, error } = useFetchStringsQuery();
   const { execute: translate, loading: translating, error: translateError } = useTranslateQuery();
+  const { execute: updateString } = useUpdateStringQuery();
   const [baseStrings, setBaseStrings] = useState<Record<string, string>>({});
   const [strings, setStrings] = useState<Record<string, string>>({});
+  const [modifiedStrings, setModifiedStrings] = useState<Set<string>>(new Set());
+  const [savingStrings, setSavingStrings] = useState<Set<string>>(new Set());
 
   const loadStrings = () => {
     fetchStrings({ organizationId, language, file }).then((result) => {
       if (result) {
         setBaseStrings(result.baseStrings);
         setStrings(result.strings);
+        setModifiedStrings(new Set());
       }
     });
   };
@@ -45,6 +50,44 @@ const EditStringsModal: React.FC<EditStringsModalProps> = ({
 
   const handleStringChange = (key: string, value: string) => {
     setStrings((prev) => ({ ...prev, [key]: value }));
+    setModifiedStrings((prev) => new Set(prev).add(key));
+  };
+
+  const handleReset = (key: string) => {
+    setStrings((prev) => ({ ...prev, [key]: baseStrings[key] || '' }));
+    setModifiedStrings((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(key);
+      return newSet;
+    });
+  };
+
+  const handleSave = async (key: string) => {
+    setSavingStrings((prev) => new Set(prev).add(key));
+    try {
+      const result = await updateString({
+        organizationId,
+        language,
+        file,
+        key,
+        value: strings[key],
+      });
+      if (result && result.success) {
+        setModifiedStrings((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(key);
+          return newSet;
+        });
+      }
+    } catch (err) {
+      console.error('Failed to update string:', err);
+    } finally {
+      setSavingStrings((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(key);
+        return newSet;
+      });
+    }
   };
 
   const handleTranslate = async () => {
@@ -115,6 +158,25 @@ const EditStringsModal: React.FC<EditStringsModalProps> = ({
                         className="w-full bg-tertiary-background p-1 text-sm mt-1"
                         rows={3}
                       />
+                      {modifiedStrings.has(key) && (
+                        <div className="mt-2 flex space-x-2">
+                          <Button
+                            type={ButtonType.Secondary}
+                            onClick={() => handleReset(key)}
+                            className="text-sm px-2 py-1"
+                          >
+                            Reset
+                          </Button>
+                          <Button
+                            type={ButtonType.Primary}
+                            onClick={() => handleSave(key)}
+                            disabled={savingStrings.has(key)}
+                            className="text-sm px-2 py-1"
+                          >
+                            {savingStrings.has(key) ? 'Saving...' : 'Save'}
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>
