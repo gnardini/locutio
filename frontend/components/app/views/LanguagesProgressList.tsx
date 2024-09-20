@@ -8,33 +8,29 @@ interface LanguagesProgressListProps {
 }
 
 export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ organization }) => {
-  const { execute: executeLanguageCounts, loading: loadingLanguageCounts, error: errorLanguageCounts } = useLanguageStringCountsQuery();
+  const {
+    execute: executeLanguageCounts,
+    loading: loadingLanguageCounts,
+    error: errorLanguageCounts,
+  } = useLanguageStringCountsQuery();
   const [languageCounts, setLanguageCounts] = useState<{ language: string; count: number }[]>([]);
   const [expandedLanguage, setExpandedLanguage] = useState<string | null>(null);
 
-  const fetchLanguageCounts = useCallback(() => {
+  useEffect(() => {
     executeLanguageCounts({ organizationId: organization.id }).then((result) => {
       if (result) {
         setLanguageCounts(result.languageCounts);
       }
     });
-  }, [organization.id, executeLanguageCounts]);
-
-  useEffect(() => {
-    fetchLanguageCounts();
-  }, [fetchLanguageCounts]);
+  }, [organization.id]);
 
   const handleLanguageClick = (language: string) => {
     setExpandedLanguage(expandedLanguage === language ? null : language);
   };
 
   const handleFileCountUpdate = useCallback((language: string, translatedCount: number) => {
-    setLanguageCounts(prevCounts =>
-      prevCounts.map(lc =>
-        lc.language === language
-          ? { ...lc, count: translatedCount }
-          : lc
-      )
+    setLanguageCounts((prevCounts) =>
+      prevCounts.map((lc) => (lc.language === language ? { ...lc, count: translatedCount } : lc)),
     );
   }, []);
 

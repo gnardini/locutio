@@ -1,6 +1,8 @@
 import { ApiError } from '@backend/core/apiHandler';
 import { makeGet } from '@backend/makeQuery';
+import { BranchService } from '@backend/services/BranchService';
 import { UsersService } from '@backend/services/UsersService';
+import { makeQuery } from '@frontend/queries/useQuery';
 import { GitHubFile, GitHubRepo } from '@type/github';
 import { Organization } from '@type/organization';
 import { User } from '@type/user';
@@ -133,57 +135,58 @@ export const GitHubService = {
     }
   },
 
-  // async updateProjectSource(
-  //   user: User,
-  //   org: Organization,
-  //   language: string,
-  //   fileName: string,
-  //   content: string,
-  // ) {
-  //   if (!user.githubAccessToken) {
-  //     throw new Error("User doesn't have an active token");
-  //   }
-  //   const filePath = `${org.outputFile?.replace('%language%', language)}/${fileName}`;
+  async updateProjectSource(
+    user: User,
+    org: Organization,
+    language: string,
+    fileName: string,
+    content: string,
+    accessToken?: string,
+  ) {
+    const githubAccessToken = accessToken ?? (await UsersService.getUserGitHubAccessToken(user.id));
+    if (!githubAccessToken) {
+      throw new Error("User doesn't have an active token");
+    }
+    const filePath = `${org.outputFile?.replace('%language%', language)}/${fileName}`;
 
-  //   const branchExists = await BranchService.checkBranchExists(
-  //     user.githubAccessToken,
-  //     org.githubRepo,
-  //     BRANCH_NAME,
-  //   );
-  //   if (!branchExists) {
-  //     await BranchService.createBranch(user.githubAccessToken, org.githubRepo, BRANCH_NAME);
-  //   }
+    const branchExists = await BranchService.checkBranchExists(
+      githubAccessToken,
+      org.githubRepo!,
+      BRANCH_NAME,
+    );
+    if (!branchExists) {
+      await BranchService.createBranch(githubAccessToken, org.githubRepo!, BRANCH_NAME);
+    }
 
-  //   let existingFile;
-  //   try {
-  //     existingFile = await this.readProjectFile(user, project, filePath, BRANCH_NAME);
-  //   } catch (error) {
-  //     // File doesn't exist, which is fine
-  //   }
+    let existingFile;
+    try {
+      existingFile = await this.readProjectFile(user, org, filePath, BRANCH_NAME);
+    } catch (error) {
+      // File doesn't exist, which is fine
+    }
 
-  //   const updateBody: any = {
-  //     message: 'Update translations',
-  //     content: Buffer.from(content).toString('base64'),
-  //     branch: BRANCH_NAME,
-  //   };
+    const updateBody: any = {
+      message: 'Update translations',
+      content: Buffer.from(content).toString('base64'),
+      branch: BRANCH_NAME,
+    };
 
-  //   if (existingFile && existingFile.sha) {
-  //     updateBody.sha = existingFile.sha;
-  //   }
+    if (existingFile && existingFile.sha) {
+      updateBody.sha = existingFile.sha;
+    }
 
-  //   const response = await makeQuery({
-  //     authToken: user.githubAccessToken,
-  //     baseUrl: '',
-  //     url: `https://api.github.com/repos/${org.githubRepo}/contents/${filePath}`,
-  //     method: 'PUT',
-  //     body: updateBody,
-  //   });
+    const response = await makeQuery({
+      authToken: githubAccessToken,
+      url: `https://api.github.com/repos/${org.githubRepo}/contents/${filePath}`,
+      method: 'PUT',
+      body: updateBody,
+    });
 
-  //   if (response.status >= 400) {
-  //     console.error('Error updating file:', response);
-  //     throw new ApiError(response.status, 'Error pushing updated translations to GitHub');
-  //   }
-  // },
+    if (response.status >= 400) {
+      console.error('Error updating file:', response);
+      throw new ApiError(response.status, 'Error pushing updated translations to GitHub');
+    }
+  },
 
   // async getInstallationToken(userId: string) {
   //   let privateKey;

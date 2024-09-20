@@ -1,6 +1,7 @@
 import { ApiError, createApiHandler } from '@backend/core/apiHandler';
 import { translateSchema } from '@backend/schemas/translate';
 import { AIService, system } from '@backend/services/AIService';
+import { GitHubService } from '@backend/services/GitHubService';
 import OrganizationsService from '@backend/services/OrganizationsService';
 import { StringsService } from '@backend/services/StringsService';
 
@@ -50,6 +51,9 @@ Output a JSON with the new or updated ${language} strings. If there are strings 
       ],
       ['translate'],
       user?.id ?? null,
+      undefined,
+      undefined,
+      true,
     );
 
     let translatedStrings: Record<string, string>;
@@ -62,6 +66,14 @@ Output a JSON with the new or updated ${language} strings. If there are strings 
     for (const [key, value] of Object.entries(translatedStrings)) {
       await StringsService.updateString(organizationId, language, file, key, value);
     }
+
+    await GitHubService.updateProjectSource(
+      user,
+      organization,
+      language,
+      file,
+      JSON.stringify(await StringsService.fetchStrings(organizationId, language, file), null, 2),
+    );
 
     return { success: true };
   },

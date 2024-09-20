@@ -88,9 +88,11 @@ export async function makeQuery({
   url,
   method = 'GET',
   body: paramBody,
+  authToken,
 }: {
   url: string;
   method?: string;
+  authToken?: string;
   body?: any;
 }) {
   const body = paramBody ? JSON.stringify(paramBody) : null;
@@ -98,6 +100,7 @@ export async function makeQuery({
     method,
     headers: {
       'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : '',
     },
     body,
   });
