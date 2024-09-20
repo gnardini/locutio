@@ -1,6 +1,5 @@
 import { ApiError, createApiHandler } from '@backend/core/apiHandler';
 import { syncStringsSchema } from '@backend/schemas/syncStrings';
-import { GitHubService } from '@backend/services/GitHubService';
 import OrganizationsService from '@backend/services/OrganizationsService';
 import { StringsService } from '@backend/services/StringsService';
 
@@ -23,14 +22,7 @@ export default createApiHandler({
     const files = await StringsService.fetchFiles(organizationId, language);
 
     for (const file of files) {
-      const strings = await StringsService.fetchStrings(organizationId, language, file);
-      await GitHubService.updateProjectSource(
-        user,
-        organization,
-        language,
-        file,
-        JSON.stringify(strings, null, 2),
-      );
+      await StringsService.fetchAndTransformStrings(user, organization, language, file);
     }
 
     return { success: true };

@@ -1,6 +1,9 @@
+import { Organization } from '@type/organization';
 import { FileStringCount, LanguageStringCount, Strings } from '@type/strings';
+import { User } from '@type/user';
 import { db, getDatabase } from '../db/db';
 import { parseNumber } from './dbHelpers';
+import { GitHubService } from './GitHubService';
 
 export const StringsService = {
   async updateStrings(
@@ -109,7 +112,42 @@ GROUP BY
       compareCount: parseNumber(row.comparecount),
     }));
   },
+
+  async fetchAndTransformStrings(
+    user: User,
+    organization: Organization,
+    language: string,
+    file: string,
+  ): Promise<void> {
+    const strings = await this.fetchStrings(organization.id, language, file);
+    const transformedStrings = transformDotNotationToNested(strings);
+
+    await GitHubService.updateProjectSource(
+      user,
+      organization,
+      language,
+      file,
+      JSON.stringify(transformedStrings, null, 2),
+    );
+  },
 };
+
+function transformDotNotationToNested(obj: Strings): any {
+  const result: any = {};
+  for (const key in obj) {
+    const keys = key.split('.');
+    let current = result;
+    for (let i = 0; i < keys.length; i++) {
+      if (i === keys.length - 1) {
+        current[keys[i]] = obj[key];
+      } else {
+        current[keys[i]] = current[keys[i]] || {};
+        current = current[keys[i]];
+      }
+    }
+  }
+  return result;
+}
 
 async function handleObject(
   trx: any,
