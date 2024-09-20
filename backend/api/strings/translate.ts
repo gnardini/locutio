@@ -16,11 +16,10 @@ const handler = createApiHandler({
       throw new ApiError(404, 'Org not found or not set up with base language');
     }
 
-    const strings = await StringsService.fetchStrings(
-      organizationId,
-      organization.baseLanguage,
-      file,
-    );
+    const [baseStrings, languageStrings] = await Promise.all([
+      StringsService.fetchStrings(organizationId, organization.baseLanguage, file),
+      StringsService.fetchStrings(organizationId, language, file),
+    ]);
 
     const response = await AIService.makeRequest([
       system(
@@ -36,9 +35,16 @@ The client's app is called ${organization.name}, here is its description: ${
         }
 
 Here is the ${organization.baseLanguage} file:
-${JSON.stringify(strings, null, 2)}
+${JSON.stringify(baseStrings, null, 2)}
 
-Output a JSON with the ${language} strings.`,
+${
+  Object.keys(languageStrings).length > 0
+    ? `Here is the ${language} file:
+  ${JSON.stringify(languageStrings, null, 2)}`
+    : ''
+}
+
+Output a JSON with the new or updated ${language} strings. If there are strings that are already properly translated, you don't need to include them in your response.`,
       ),
     ]);
 
