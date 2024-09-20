@@ -1,3 +1,4 @@
+
 import { Button, ButtonType } from '@frontend/components/common/Button';
 import { Loader } from '@frontend/components/common/Loader';
 import { Modal } from '@frontend/components/common/Modal';
@@ -13,6 +14,7 @@ interface EditStringsModalProps {
   language: string;
   baseLanguage: string;
   file: string;
+  onStringsUpdated: (file: string, translatedCount: number, totalCount: number) => void;
 }
 
 const EditStringsModal: React.FC<EditStringsModalProps> = ({
@@ -22,6 +24,7 @@ const EditStringsModal: React.FC<EditStringsModalProps> = ({
   language,
   baseLanguage,
   file,
+  onStringsUpdated,
 }) => {
   const { execute: fetchStrings, loading, error } = useFetchStringsQuery();
   const { execute: translate, loading: translating, error: translateError } = useTranslateQuery();
@@ -33,6 +36,9 @@ const EditStringsModal: React.FC<EditStringsModalProps> = ({
       if (result) {
         setBaseStrings(result.baseStrings);
         setStrings(result.strings);
+        const translatedCount = Object.values(result.strings).filter(value => value.length > 0).length;
+        const totalCount = Object.keys(result.baseStrings).length;
+        onStringsUpdated(file, translatedCount, totalCount);
       }
     });
   };

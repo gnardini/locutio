@@ -1,3 +1,4 @@
+
 import { useFileStringCountsQuery } from '@frontend/queries/strings/useFileStringCountsQuery';
 import React, { useEffect, useState } from 'react';
 import EditStringsModal from '../modals/EditStringsModal';
@@ -25,6 +26,16 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
     error: errorFileCounts,
   } = useFileStringCountsQuery();
   const [fileCounts, setFileCounts] = useState<FileStringCount[]>([]);
+
+  const updateFileCount = (file: string, translatedCount: number, totalCount: number) => {
+    setFileCounts(prevCounts => 
+      prevCounts.map(fc => 
+        fc.file === file 
+          ? { ...fc, compareCount: translatedCount, baseCount: totalCount }
+          : fc
+      )
+    );
+  };
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
   useEffect(() => {
@@ -75,6 +86,7 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
           language={language}
           baseLanguage={baseLanguage}
           file={selectedFile}
+          onStringsUpdated={updateFileCount}
         />
       )}
     </div>
