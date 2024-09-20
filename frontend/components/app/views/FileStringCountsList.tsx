@@ -1,8 +1,7 @@
 import { useFileStringCountsQuery } from '@frontend/queries/strings/useFileStringCountsQuery';
-import { useTranslateQuery } from '@frontend/queries/strings/useTranslateQuery';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import EditStringsModal from '../modals/EditStringsModal';
-import { Button, ButtonType } from '@frontend/components/common/Button';
+import { FileProgressRow } from './FileProgressRow';
 
 interface FileStringCount {
   file: string;
@@ -28,10 +27,31 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
     loading: loadingFileCounts,
     error: errorFileCounts,
   } = useFileStringCountsQuery();
-  const { execute: executeTranslate, loading: loadingTranslate } = useTranslateQuery();
   const [fileCounts, setFileCounts] = useState<FileStringCount[]>([]);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
-  const updateFileCount = useCallback((file: string, translatedCount: number, totalCount: number) => {
+  const loadFileCounts = async () => {
+    const result = await executeFileCounts({ organizationId, language });
+    if (result) {
+      setFileCounts(result.fileCounts);
+      const totalTranslatedCount = result.fileCounts.reduce((sum, fc) => sum + fc.compareCount, 0);
+      onLanguageCountUpdate(language, totalTranslatedCount);
+    }
+  };
+
+  useEffect(() => {
+    loadFileCounts();
+  }, [organizationId, language]);
+
+  const handleFileClick = (file: string) => {
+    setSelectedFile(file);
+  };
+
+  const handleTranslate = async (file: string) => {
+    await loadFileCounts();
+  };
+
+  const updateFileCount = (file: string, translatedCount: number, totalCount: number) => {
     setFileCounts(prevCounts => {
       const newCounts = prevCounts.map(fc => 
         fc.file === file 
@@ -42,77 +62,24 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
       onLanguageCountUpdate(language, totalTranslatedCount);
       return newCounts;
     });
-  }, [language, onLanguageCountUpdate]);
-
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
-
-  useEffect(() => {
-    executeFileCounts({ organizationId, language }).then((result) => {
-      if (result) {
-        setFileCounts(result.fileCounts);
-        const totalTranslatedCount = result.fileCounts.reduce((sum, fc) => sum + fc.compareCount, 0);
-        onLanguageCountUpdate(language, totalTranslatedCount);
-      }
-    });
-  }, [organizationId, language, onLanguageCountUpdate]);
-
-  const handleFileClick = (file: string) => {
-    setSelectedFile(file);
   };
 
-  const handleTranslate = async (file: string) => {
-    try {
-      const result = await executeTranslate({ organizationId, language, file });
-      if (result && result.success) {
-        const updatedCounts = await executeFileCounts({ organizationId, language });
-        if (updatedCounts) {
-          setFileCounts(updatedCounts.fileCounts);
-          const totalTranslatedCount = updatedCounts.fileCounts.reduce((sum, fc) => sum + fc.compareCount, 0);
-          onLanguageCountUpdate(language, totalTranslatedCount);
-        }
-      }
-    } catch (err) {
-      console.error('Translation failed:', err);
-    }
-  };
-
-  // if (loadingFileCounts) return <div>Loading file counts...</div>;
   if (errorFileCounts) return <div>Error loading file counts: {errorFileCounts}</div>;
 
   return (
     <div className="space-y-2">
-      {fileCounts.map((fc) => {
-        const progress = fc.baseCount > 0 ? (fc.compareCount / fc.baseCount) * 100 : 0;
-        return (
-          <div
-            key={fc.file}
-            className="text-sm"
-          >
-            <div className="flex justify-between mb-1 items-center">
-              <span className="cursor-pointer" onClick={() => handleFileClick(fc.file)}>{fc.file}</span>
-              <div className="flex items-center space-x-2">
-                <Button
-                  type={ButtonType.Secondary}
-                  onClick={() => handleTranslate(fc.file)}
-                  disabled={loadingTranslate}
-                  className="py-1 px-2 text-xs"
-                >
-                  Translate
-                </Button>
-                <span>
-                  {fc.compareCount}/{fc.baseCount} strings ({progress.toFixed(1)}%)
-                </span>
-              </div>
-            </div>
-            <div className="w-full bg-gray-700 rounded-full h-1.5">
-              <div
-                className="bg-secondary-accent h-1.5 rounded-full"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-        );
-      })}
+      {fileCounts.map((fc) => (
+        <FileProgressRow
+          key={fc.file}
+          file={fc.file}
+          baseCount={fc.baseCount}
+          compareCount={fc.compareCount}
+          organizationId={organizationId}
+          language={language}
+          onTranslate={handleTranslate}
+          onFileClick={handleFileClick}
+        />
+      ))}
       {selectedFile && (
         <EditStringsModal
           visible={!!selectedFile}
