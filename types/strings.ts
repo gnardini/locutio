@@ -17,3 +17,14 @@ export interface String {
   created_at: string;
   updated_at: string;
 }
+
+export interface LanguageStringCount {
+  language: string;
+  count: number;
+}
+
+export interface FileStringCount {
+  file: string;
+  baseCount: number;
+  compareCount: number;
+}

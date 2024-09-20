@@ -1,5 +1,6 @@
-import { Strings } from '@type/strings';
+import { Strings, LanguageStringCount, FileStringCount } from '@type/strings';
 import { getDatabase } from '../db/db';
+import { parseNumber } from './dbHelpers';
 
 export const StringsService = {
   async updateStrings(
@@ -45,21 +46,59 @@ export const StringsService = {
 
     return rows.reduce((result, row) => {
       result[row.key] = row.value;
-
-      // const keys = row.key.split(".");
-      // let current = result;
-      // for (let i = 0; i < keys.length; i++) {
-      //   const key = keys[i];
-      //   if (i === keys.length - 1) {
-      //     current[key] = row.value;
-      //   } else {
-      //     current[key] = current[key] || {};
-      //     current = current[key];
-      //   }
-      // }
-
       return result;
     }, {});
+  },
+
+  async getLanguageStringCounts(organizationId: string): Promise<LanguageStringCount[]> {
+    const db = await getDatabase();
+    const rows = await db.raw(
+      `SELECT language, COUNT(*) as count
+FROM strings 
+WHERE organization_id = ?
+GROUP BY language`,
+      [organizationId],
+    );
+
+    return rows.rows.map((row: any) => ({
+      language: row.language,
+      count: parseNumber(row.count),
+    }));
+  },
+
+  async getFileStringCounts(
+    organizationId: string,
+    baseLanguage: string,
+    compareLanguage: string,
+  ): Promise<FileStringCount[]> {
+    const db = await getDatabase();
+    const rows = await db.raw(
+      `
+SELECT 
+  base.file,
+  COUNT(DISTINCT base.key) as baseCount,
+  COUNT(DISTINCT compare.key) as compareCount
+FROM 
+  strings base
+LEFT JOIN 
+  strings compare ON base.file = compare.file 
+    AND base.key = compare.key 
+    AND compare.language = ? 
+    AND compare.organization_id = ?
+WHERE 
+  base.organization_id = ? 
+  AND base.language = ?
+GROUP BY 
+  base.file
+    `,
+      [compareLanguage, organizationId, organizationId, baseLanguage],
+    );
+
+    return rows.rows.map((row: any) => ({
+      file: row.file,
+      baseCount: parseNumber(row.basecount),
+      compareCount: parseNumber(row.comparecount),
+    }));
   },
 };
 
