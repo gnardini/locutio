@@ -30,6 +30,7 @@ export const StringsService = {
         file,
         key,
         value,
+        updated_at: new Date(),
       })
       .onConflict(['organization_id', 'language', 'file', 'key'])
       .merge();
