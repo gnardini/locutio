@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { useFileStringCountsQuery } from '@frontend/queries/strings/useFileStringCountsQuery';
+import React, { useEffect, useState } from 'react';
 import EditStringsModal from '../modals/EditStringsModal';
 
 interface FileStringCount {
@@ -19,11 +19,15 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
   language,
   baseLanguage,
 }) => {
-  const { execute: executeFileCounts, loading: loadingFileCounts, error: errorFileCounts } = useFileStringCountsQuery();
+  const {
+    execute: executeFileCounts,
+    loading: loadingFileCounts,
+    error: errorFileCounts,
+  } = useFileStringCountsQuery();
   const [fileCounts, setFileCounts] = useState<FileStringCount[]>([]);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     executeFileCounts({ organizationId, language }).then((result) => {
       if (result) {
         setFileCounts(result.fileCounts);
@@ -43,7 +47,11 @@ export const FileStringCountsList: React.FC<FileStringCountsListProps> = ({
       {fileCounts.map((fc) => {
         const progress = fc.baseCount > 0 ? (fc.compareCount / fc.baseCount) * 100 : 0;
         return (
-          <div key={fc.file} className="text-sm cursor-pointer" onClick={() => handleFileClick(fc.file)}>
+          <div
+            key={fc.file}
+            className="text-sm cursor-pointer"
+            onClick={() => handleFileClick(fc.file)}
+          >
             <div className="flex justify-between mb-1">
               <span>{fc.file}</span>
               <span>
