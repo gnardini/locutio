@@ -1,13 +1,13 @@
-import { initLocale } from '@locales/i18n';
 import { modifyUrl } from 'vike/modifyUrl';
 import { OnBeforeRenderSync } from 'vike/types';
 import { extractLocale } from '../locales/extractLocale';
+import { initLocale } from '@locales/i18n';
 
 export const onBeforeRoute: OnBeforeRenderSync = (pageContext): ReturnType<OnBeforeRenderSync> => {
   const url = pageContext.urlParsed;
 
   const { urlPathnameWithoutLocale, locale } = extractLocale(url.pathname);
-  // initLocale(locale);
+  initLocale();
   const urlLogical = modifyUrl(url.href, { pathname: urlPathnameWithoutLocale });
 
   return {

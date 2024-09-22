@@ -1,0 +1,8 @@
+{
+  "billedAnnually": "Facturación anual ${{annualPrice}} (2 meses gratis)",
+  "contactUs": "Contáctenos",
+  "getStarted": "Comenzar",
+  "includesAICredits": "Incluye ${{aiCredits}} en créditos de IA/mes",
+  "pricingPlans": "Planes de Precios",
+  "upToManagers": "Hasta {{managers}} gestores"
+}

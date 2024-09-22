@@ -1,6 +1,5 @@
-import { Button } from '@frontend/components/common/Button';
 import { Modal } from '@frontend/components/common/Modal';
-import { AuthForm } from './AuthForm';
+import { FaGithub } from 'react-icons/fa';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -18,10 +17,17 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   return (
     <Modal visible={isOpen} closeModal={onClose} extraClassName="w-[500px]">
-      <Button href={githubAuthUrl}>Sign in with GitHub</Button>
-      <p className="my-4">or</p>
+      <a
+        href={githubAuthUrl}
+        className="flex flex-row items-center justify-center font-medium text-lg gap-2 bg-primary-background rounded-xl w-full py-3"
+      >
+        <FaGithub />
+        Sign in with GitHub
+      </a>
+
+      {/* <p className="my-4">or</p>
       <h2 className="mb-4">Set up your account</h2>
-      <AuthForm onAuthSuccess={handleAuthSuccess} initialState="signup" />
+      <AuthForm onAuthSuccess={handleAuthSuccess} initialState="signup" /> */}
     </Modal>
   );
 }

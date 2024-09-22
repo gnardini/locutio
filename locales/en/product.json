@@ -1,0 +1,10 @@
+{
+  "ourProduct": "Our Product",
+  "discoverSolution": "Discover how our AI-powered solution simplifies your localization process",
+  "aiStringExtraction": "AI String Extraction",
+  "aiStringExtractionDescription": "Our AI coder moves hard-coded strings from your app or website into translation files",
+  "contextAwareTranslation": "Context-Aware Translation",
+  "contextAwareTranslationDescription": "Our context-aware AI translates your copy to your chosen languages",
+  "seamlessIntegration": "Seamless Integration",
+  "seamlessIntegrationDescription": "We open a Pull Request with all the newly translated copy to integrate it with your code"
+}

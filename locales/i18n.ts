@@ -4,17 +4,16 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { initReactI18next } from 'react-i18next';
 
-export function initLocale(locale: string) {
+export function initLocale() {
   return i18n
     .use(LanguageDetector)
     .use(
       resourcesToBackend(
-        (language: string, ns: string) => import(`../public/locales/${language}/${ns}.json`),
+        (language: string, ns: string) => import(`../locales/${language}/${ns}.json`),
       ),
     )
     .use(initReactI18next)
     .init({
-      lng: locale || localeDefault,
       fallbackLng: localeDefault,
 
       debug: false,
