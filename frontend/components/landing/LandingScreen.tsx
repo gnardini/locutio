@@ -4,55 +4,10 @@ import { FaArrowRight } from 'react-icons/fa';
 import { AuthModal } from '../auth/AuthModal';
 import { Button } from '../common/Button';
 import { Footer } from './views/Footer';
+import { PricingSection } from './views/PricingSection';
 
 interface Props {
   user: User | null;
-}
-
-function PricingTier({ title, price, features }: { title: string; price: string; features: string[] }) {
-  return (
-    <div className="bg-secondary-background p-6 rounded-lg shadow-lg flex flex-col h-full">
-      <h3 className="text-2xl font-bold mb-4">{title}</h3>
-      <p className="text-3xl font-bold mb-6">{price}</p>
-      <ul className="list-disc list-inside mb-6 flex-grow">
-        {features.map((feature, index) => (
-          <li key={index} className="mb-2">{feature}</li>
-        ))}
-      </ul>
-      <Button className="mt-auto">Get Started</Button>
-    </div>
-  );
-}
-
-function PricingSection() {
-  return (
-    <div className="w-full max-w-[1000px] mx-auto my-20">
-      <h2 className="text-4xl font-bold mb-10">Pricing</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <PricingTier
-          title="Free"
-          price="$0"
-          features={[
-            "Up to 5,000 words",
-            "Unlimited users",
-            "Unlimited translated languages",
-            "500 AI credits"
-          ]}
-        />
-        <PricingTier
-          title="Pro"
-          price="$25/month"
-          features={[
-            "Up to 200,000 words",
-            "Unlimited users",
-            "Unlimited translated languages",
-            "20,000 AI credits"
-          ]}
-        />
-      </div>
-      <p className="mt-8 text-lg text-text-secondary">Larger plans available upon request</p>
-    </div>
-  );
 }
 
 export function LandingScreen({ user }: Props) {
