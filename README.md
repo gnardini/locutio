@@ -1,6 +1,9 @@
-# Template
+# Locutio
 
-Overall description of the project here.
+[Locutio](https://locut.io) is an AI-powered Translation Management System. It makes it simple to use AI to translate your content across multiple languages.
+
+![Demo](public/demo.mp4)
+_Locutio_
 
 ## Prerequisites
 
@@ -9,6 +12,7 @@ Before you begin, ensure you have the following installed:
 - Node.js
 - Yarn package manager
 - PostgreSQL database
+- OpenAI API key
 
 ## Installation
 
@@ -46,6 +50,7 @@ This will start the server on `http://localhost:3000` (or the port specified in 
 To run the project in production mode:
 
 Update your .env file:
+
 ```
 NODE_ENV=production
 ```
@@ -61,9 +66,9 @@ NODE_ENV=production
 
 ## Optional Services
 
-### Resend (for email invitations)
+### LLM Logger (to keep track of translations)
 
-If you want to enable email invitations, sign up for a Resend account and add your API key to the `RESEND_API_KEY` variable in the `.env` file.
+
 
 ## Note
 
