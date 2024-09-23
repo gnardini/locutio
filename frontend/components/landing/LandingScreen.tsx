@@ -34,6 +34,18 @@ export function LandingScreen({ user }: Props) {
     pricingSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleFreeTierClick = () => {
+    if (user) {
+      window.location.href = '/app';
+    } else {
+      setIsAuthModalOpen(true);
+    }
+  };
+
+  const handleProTierClick = () => {
+    window.location.href = 'https://buy.stripe.com/eVa7sZ8qbd062sg144';
+  };
+
   return (
     <div className="flex flex-col items-center min-h-screen p-6 text-center relative bg-gradient-to-r from-secondary-background via-primary-background to-secondary-background">
       <nav className="w-full max-w-[1000px] flex justify-end items-center mb-10 gap-8">
@@ -78,7 +90,7 @@ export function LandingScreen({ user }: Props) {
       </div>
 
       <div ref={pricingSectionRef}>
-        <PricingSection />
+        <PricingSection onFreeTierClick={handleFreeTierClick} onProTierClick={handleProTierClick} />
       </div>
 
       <Footer />

@@ -1,6 +1,6 @@
 import { Button } from '../../common/Button';
 
-function PricingTier({ title, price, features }: { title: string; price: string; features: string[] }) {
+function PricingTier({ title, price, features, onClick }: { title: string; price: string; features: string[]; onClick: () => void }) {
   return (
     <div className="bg-secondary-background p-6 rounded-lg shadow-lg flex flex-col h-full">
       <h3 className="text-2xl font-bold mb-4">{title}</h3>
@@ -10,12 +10,17 @@ function PricingTier({ title, price, features }: { title: string; price: string;
           <li key={index} className="mb-2">{feature}</li>
         ))}
       </ul>
-      <Button className="mt-auto py-2">Get Started</Button>
+      <Button className="mt-auto py-2" onClick={onClick}>Get Started</Button>
     </div>
   );
 }
 
-export function PricingSection() {
+interface PricingSectionProps {
+  onFreeTierClick: () => void;
+  onProTierClick: () => void;
+}
+
+export function PricingSection({ onFreeTierClick, onProTierClick }: PricingSectionProps) {
   return (
     <div className="w-full max-w-[1000px] mx-auto my-20">
       <h2 className="text-4xl font-bold mb-10">Pricing</h2>
@@ -29,6 +34,7 @@ export function PricingSection() {
             "Unlimited translated languages",
             "500 AI credits"
           ]}
+          onClick={onFreeTierClick}
         />
         <PricingTier
           title="Pro"
@@ -39,6 +45,7 @@ export function PricingSection() {
             "Unlimited translated languages",
             "20,000 AI credits"
           ]}
+          onClick={onProTierClick}
         />
       </div>
       <p className="mt-8 text-lg text-text-secondary">Larger plans available upon request</p>
