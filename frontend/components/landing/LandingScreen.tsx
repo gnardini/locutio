@@ -53,7 +53,7 @@ export function LandingScreen({ user }: Props) {
   
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6 text-center relative bg-gradient-to-r from-secondary-background via-primary-background to-secondary-background">
+    <div className="flex flex-col items-center min-h-screen p-6 text-center relative bg-primary-background sm:bg-gradient-to-r sm:from-secondary-background sm:via-primary-background sm:to-secondary-background">
       <Header user={user} onScrollToPricing={scrollToPricing} onGoToApp={handleGoToApp} />
       <AuthModal isOpen={isAuthModalOpen} onClose={handleCloseAuthModal} />
       <h1 className="max-w-[800px] text-3xl sm:text-6xl font-bold mt-4 sm:mt-20 bg-clip-text text-transparent bg-gradient-to-r from-secondary-accent to-purple-500">
