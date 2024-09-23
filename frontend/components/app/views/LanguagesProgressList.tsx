@@ -3,6 +3,7 @@ import { Organization } from '@type/organization';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FileStringCountsList } from './FileStringCountsList';
 import { SyncFileStringsButton } from './SyncFileStringsButton';
+import { getLanguageName } from '@frontend/utils/languages';
 
 interface LanguagesProgressListProps {
   organization: Organization;
@@ -68,7 +69,7 @@ export const LanguagesProgressList: React.FC<LanguagesProgressListProps> = ({ or
               onClick={() => handleLanguageClick(lc.language)}
             >
               <div className="flex justify-between mb-1">
-                <span>{lc.language}</span>
+                <span>{getLanguageName(lc.language)} ({lc.language})</span>
                 <span>
                   {lc.count}/{baseCount} strings ({progress.toFixed(1)}%)
                 </span>

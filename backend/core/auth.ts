@@ -28,7 +28,7 @@ export const authenticateUser = async (
     const newToken = createUserAuthToken(user.id);
     setHeader(
       'Set-Cookie',
-      `token=${newToken}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60}; SameSite=Strict; Secure`,
+      `token=${newToken}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60}; SameSite=Lax; Secure`,
     );
   }
 

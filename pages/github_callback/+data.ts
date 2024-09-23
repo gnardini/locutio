@@ -36,7 +36,7 @@ export default async function data(context: PageContextServer): Promise<LandingD
   // @ts-ignore
   context.response.setHeader(
     'Set-Cookie',
-    `token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60}; SameSite=Strict; Secure`,
+    `token=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 60 * 60}; SameSite=Lax; Secure`,
   );
 
   throw redirect('/app');

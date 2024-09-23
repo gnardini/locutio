@@ -62,10 +62,10 @@ export const SyncButton: React.FC<Props> = ({ organization }) => {
         <p className="text-sm text-green-600">{t('projectUpToDate')}</p>
       ) : (
         <>
-          <p className="text-sm text-gray-600 mb-2">{t('updatePending')}</p>
           <Button onClick={syncProject} loading={loading}>
             {t('syncUp')}
           </Button>
+          <p className="text-sm text-gray-600 mb-2">{t('updatePending')}</p>
         </>
       )}
     </div>
