@@ -1,12 +1,13 @@
 import { User } from '@type/user';
 import { useRef, useState } from 'react';
-import { FaArrowRight, FaPlay } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import { navigate } from 'vike/client/router';
 import { AuthModal } from '../auth/AuthModal';
 import { Button } from '../common/Button';
 import { Footer } from './views/Footer';
 import { PricingSection } from './views/PricingSection';
 import { Header } from '@frontend/components/landing/views/Header';
+import { DemoVideoView } from './views/DemoVideoView';
 
 interface Props {
   user: User | null;
@@ -14,9 +15,7 @@ interface Props {
 
 export function LandingScreen({ user }: Props) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const pricingSectionRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleTryForFreeClick = () => {
     if (user) {
@@ -51,16 +50,7 @@ export function LandingScreen({ user }: Props) {
     window.location.href = 'https://buy.stripe.com/eVa7sZ8qbd062sg144';
   };
 
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
+  
 
   return (
     <div className="flex flex-col items-center min-h-screen p-6 text-center relative bg-gradient-to-r from-secondary-background via-primary-background to-secondary-background">
@@ -85,27 +75,7 @@ export function LandingScreen({ user }: Props) {
 
       <div className="w-full max-w-[1000px] mt-24 mb-24">
         <h2 className="text-3xl font-bold mb-6">Demo</h2>
-        <div className="relative">
-          <video
-            ref={videoRef}
-            className="w-full h-auto rounded-lg shadow-lg"
-            muted
-            playsInline
-          >
-            <source src="/demo.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          {!isPlaying && (
-            <div
-              className="absolute inset-0 flex items-center justify-center cursor-pointer"
-              onClick={togglePlay}
-            >
-              <div className="bg-black bg-opacity-50 rounded-full p-4">
-                <FaPlay className="text-white text-4xl" />
-              </div>
-            </div>
-          )}
-        </div>
+        <DemoVideoView />
       </div>
 
       <div ref={pricingSectionRef}>
