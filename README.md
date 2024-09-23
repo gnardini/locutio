@@ -2,7 +2,7 @@
 
 [Locutio](https://locut.io) is an AI-powered Translation Management System. It makes it simple to use AI to translate your content across multiple languages.
 
-![Demo](public/demo.mp4)
+<video src="https://github.com/user-attachments/assets/30030215-56d3-4290-97d7-e0ebbb2d3f16"></video>
 _Locutio_
 
 ## Prerequisites
