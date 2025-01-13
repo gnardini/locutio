@@ -63,7 +63,6 @@ export const RepoSyncService = {
       latestCommit,
       githubAccessToken,
     );
-
     const inputFiles = changedFiles.filter(
       (file) => organization.inputFile && file.name.startsWith(organization.inputFile),
     );
@@ -79,7 +78,7 @@ export const RepoSyncService = {
       await StringsService.updateStrings(
         organization.id,
         organization.baseLanguage,
-        file.name,
+        file.name.replace(organization.inputFile, ''),
         content,
       );
     }

@@ -27,3 +27,5 @@ export const LLM_LOGGER_API_KEY = process.env.LLM_LOGGER_API_KEY ?? '';
 
 export const GITHUB_CLIENT_ID = process.env.PUBLIC_ENV__GITHUB_CLIENT_ID ?? '';
 export const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET ?? '';
+
+export const DISCORD_WEBHOOK = process.env.DISCORD_WEBHOOK ?? '';
