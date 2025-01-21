@@ -41,13 +41,7 @@ export const StripeService = {
 
       if (event.type === 'checkout.session.completed') {
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log(session)
         console.log(JSON.stringify(session, null, 2));
-        const userId = session.metadata?.user_id;
-
-        if (!userId) {
-          throw new Error('Missing user_id in session metadata');
-        }
 
         // TODO: Handle payment
       }
